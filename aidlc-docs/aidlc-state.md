@@ -5,7 +5,7 @@
 - **Project Name**: BigBatch
 - **Project Type**: Greenfield
 - **Start Date**: 2026-05-13T00:00:00Z
-- **Current Stage**: INCEPTION - Requirements Analysis
+- **Current Stage**: INCEPTION - Units Generation
 
 ## Workspace State
 
@@ -27,10 +27,10 @@
 
 - [x] Workspace Detection
 - [ ] Reverse Engineering (N/A — greenfield)
-- [ ] Requirements Analysis
-- [ ] User Stories
-- [ ] Workflow Planning
-- [ ] Application Design
+- [x] Requirements Analysis
+- [x] User Stories
+- [x] Workflow Planning
+- [x] Application Design
 - [ ] Units Generation
 
 ### 🟢 CONSTRUCTION PHASE
@@ -44,7 +44,7 @@
 
 ## Extension Configuration
 
-| Extension              | Enabled | Decided At            |
-| ---------------------- | ------- | --------------------- |
-| Security Baseline      | Pending | Requirements Analysis |
-| Property-Based Testing | Pending | Requirements Analysis |
+| Extension              | Enabled    | Decided At                         |
+| ---------------------- | ---------- | ---------------------------------- |
+| Security Baseline      | Yes        | Requirements Analysis (2026-05-13) |
+| Property-Based Testing | Yes (Full) | Requirements Analysis (2026-05-13) |

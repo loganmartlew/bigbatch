@@ -1,6 +1,7 @@
 # AI-DLC Audit Log
 
 ## Workflow Start
+
 **Timestamp**: 2026-05-13T00:00:00Z
 **User Input**: "Using AI-DLC I want to build an app for bulk-cooking called BigBatch. The details are in project-prompt.md."
 **AI Response**: Displayed welcome message; loaded common rules, opt-in extensions (security-baseline, property-based-testing); read project-prompt.md.
@@ -9,9 +10,154 @@
 ---
 
 ## Workspace Detection
+
 **Timestamp**: 2026-05-13T00:00:01Z
 **User Input**: (none)
 **AI Response**: Scanned workspace. Found only `project-prompt.md` and `.aidlc-rule-details/`, `.github/`. No source code, no build files. Greenfield project.
 **Context**: Workspace Detection stage. Project type: Greenfield. Next stage: Requirements Analysis.
+
+---
+
+## Requirements Analysis — Clarifying Questions Issued
+
+**Timestamp**: 2026-05-13T00:00:02Z
+**User Input**: (none — initial generation)
+**AI Response**: Created `aidlc-docs/inception/requirements/requirement-verification-questions.md` with 15 questions covering platform, sync, hosting, nutrition data, units, macros, scaling, shopping list, cook mode, history, import/export, tech stack, and the two extension opt-ins.
+**Context**: Requirements Analysis Step 6 — clarifying questions.
+
+---
+
+## Requirements Analysis — User Answers Received
+
+**Timestamp**: 2026-05-13T00:00:03Z
+**User Input**: "Done" (with all 15 [Answer]: tags filled in the questions file)
+**AI Response**: Parsed answers — Q1=D (web+native mobile), Q2=C (multi-user household), Q3=C (cloud-hosted), Q4=B (manual + OpenFoodFacts), Q5=C (metric primary + common kitchen units), Q6=A (cal+P+C+F), Q7=B+C combined (rounding + per-ingredient override), Q8=C (per-list "I have this"), Q9=B (auto category groups), Q10=C (instructions + checkable + wake-lock), Q11=C (cook events with notes), Q12=X (no import/export, backend handles it), Q13=X (full tech-stack decision module requested), Q14=A (security enforced), Q15=A (PBT enforced).
+**Context**: Requirements Analysis — user answers parsed. Extensions both enabled; loaded full security-baseline.md and property-based-testing.md rule files.
+
+---
+
+## Requirements Analysis — Tech Stack Decision Module Created
+
+**Timestamp**: 2026-05-13T00:00:04Z
+**User Input**: (follow-up driven by Q13=X)
+**AI Response**: Created `aidlc-docs/inception/requirements/tech-stack-decisions.md` with 8 sub-decisions (mobile strategy, backend, database, auth, API style, web framework, repo structure, hosting), each with options + pros/cons + a recommendation summary. Awaiting user answers.
+**Context**: Requirements Analysis — follow-up clarification round triggered by Q13 "Other".
+
+---
+
+## Requirements Analysis — Tech Stack Answers Received
+
+**Timestamp**: 2026-05-16T00:00:00Z
+**User Input**: "Done" (with all 8 [Answer]: tags filled in tech-stack-decisions.md)
+**AI Response**: Parsed answers — D1=A (React Native Expo), D2=B (TypeScript+Fastify), D3=B (SQLite/Turso), D4=B (Self-managed auth), D5=A (REST+OpenAPI), D6=D (Vite+React SPA), D7=A (Monorepo), D8=X (Cloudflare Pages for web, PaaS for API). No contradictions detected. D3+Q2 (SQLite + multi-user) assessed as acceptable — Turso handles concurrent HTTP access for household scale.
+**Context**: Requirements Analysis — tech stack follow-up answers parsed.
+
+---
+
+## Requirements Analysis — Requirements Document Generated
+
+**Timestamp**: 2026-05-16T00:00:01Z
+**User Input**: (none — generation triggered by tech stack answers)
+**AI Response**: Created `aidlc-docs/inception/requirements/requirements.md` with 8 functional requirements (FR-01 through FR-08), 6 non-functional requirements (NFR-01 through NFR-06), out-of-scope list, tech stack decisions table, and open design decisions. Awaiting user approval.
+**Context**: Requirements Analysis Step 7 — requirements document generation.
+
+---
+
+## Requirements Analysis — Approval
+
+**Timestamp**: 2026-05-16T00:01:00Z
+**User Input**: "Continue"
+**AI Response**: Requirements approved. Proceeding to User Stories stage.
+**Context**: Requirements Analysis Step 9 — user approved requirements, moving to next stage.
+
+---
+
+## User Stories — Plan Created
+
+**Timestamp**: 2026-05-16T00:02:00Z
+**User Input**: (none)
+**AI Response**: Created user-stories-assessment.md (justified: high priority — all features user-facing, multi-persona, complex business logic). Created story-generation-plan.md with 8 questions (breakdown approach, granularity, AC format, persona depth, priority labels, household invite mechanism, household roles, shopping list lifecycle). Awaiting user answers.
+**Context**: User Stories Part 1 — Planning (Steps 1–7).
+
+---
+
+## User Stories — Plan Answers Received
+
+**Timestamp**: 2026-05-16T00:03:00Z
+**User Input**: "Done" (with all 8 [Answer]: tags filled in story-generation-plan.md)
+**AI Response**: Parsed answers — Q1=A (user journey-based), Q2=B (medium granularity), Q3=C (mixed AC format), Q4=B (standard persona depth), Q5=C (P0/P1/P2 tiers), Q6=X (signup: create OR join household; join via link+code), Q7=B (owner+members), Q8=B (persistent until cleared). No ambiguities detected. Proceeded to Part 2 (generation).
+**Context**: User Stories Part 1 — answer analysis complete (Steps 8–10).
+
+---
+
+## User Stories — Generation Complete
+
+**Timestamp**: 2026-05-16T00:04:00Z
+**User Input**: (none — generation triggered by approved plan)
+**AI Response**: Generated personas.md (2 personas: Sam — primary cook/owner, Alex — household member) and stories.md (28 stories across 7 journeys: Getting Started, Ingredient Library, Recipes, Shopping, Cooking, Logging/History, Household Management). Includes traceability matrix (all FRs covered), PBT property summary (9 properties identified), and INVEST validation (all pass). Awaiting user approval.
+**Context**: User Stories Part 2 — Generation (Steps 15–18).
+
+---
+
+## User Stories — Approval
+
+**Timestamp**: 2026-05-16T00:05:00Z
+**User Input**: "Approve"
+**AI Response**: User stories approved. Proceeding to Workflow Planning stage.
+**Context**: User Stories Step 21 — user approved stories, moving to Workflow Planning.
+
+---
+
+## Workflow Planning — Plan Created & Approved
+
+**Timestamp**: 2026-05-16T00:06:00Z
+**User Input**: "Approve"
+**AI Response**: Execution plan approved. All stages set to EXECUTE (no skips). Proceeding to Application Design.
+**Context**: Workflow Planning Step 9 — user approved execution plan.
+
+---
+
+## Application Design — Questions Answered
+
+**Timestamp**: 2026-05-16T00:07:00Z
+**User Input**: "Done" (with all 7 [Answer]: tags filled in application-design-plan.md)
+**AI Response**: Parsed answers — Q1=B (modular domain plugins), Q2=B (types+validation+pure business logic), Q3=B (Drizzle ORM), Q4=A (Lucia Auth), Q5=A (TanStack Query), Q6=B (proxy with caching), Q7=A (Turborepo). No ambiguities. Generated 5 design artifacts: components.md, component-methods.md, services.md, component-dependency.md, application-design.md. Awaiting user approval.
+**Context**: Application Design Steps 7–10 — answers parsed, artifacts generated.
+
+---
+
+## Application Design — Change Request (pre-approval)
+
+**Timestamp**: 2026-05-16T00:15:00Z
+**User Input**: "Users should have to enter a full name (first/last) when registering. This is so that users in the household can see names. Users should also be able to be a part of multiple households. For routing in the web app I want to use tanstack router instead of react router."
+**AI Response**: Applied 3 design changes across all 5 application design artifacts: (1) Added firstName/lastName to registration input, User type, RegisterSchema; (2) Multi-household: introduced user_households join table, UserHousehold type, activeHouseholdId on User, new endpoints GET /households and PUT /auth/active-household, updated all service functions for multi-household logic; (3) Replaced React Router with TanStack Router in web client architecture. Re-presenting for approval.
+**Context**: Application Design — user requested changes before approval.
+
+---
+
+## Application Design — Change Request #2 (pre-approval)
+
+**Timestamp**: 2026-05-16T00:20:00Z
+**User Input**: "Users active households should be a UI-only thing. They should be able to switch households without changing anything in the database, it should just save the active household locally."
+**AI Response**: Removed server-side active household: (1) Removed activeHouseholdId from User type; (2) Removed PUT /auth/active-household endpoint and SwitchHouseholdSchema; (3) Removed switchActiveHousehold service function; (4) Auth middleware now reads householdId from X-Household-Id request header (validated against user's memberships); (5) Web stores active household in localStorage, mobile in AsyncStorage; (6) Updated all service functions to remove activeHouseholdId side-effects. Re-presenting for approval.
+**Context**: Application Design — user requested active household be client-side only.
+
+---
+
+## Application Design — Approved
+
+**Timestamp**: 2026-05-16T00:25:00Z
+**User Input**: "Leave it for later. The current checkpoint is approved, continue."
+**AI Response**: Application Design approved. Proceeding to Units Generation.
+**Context**: Application Design Step 17 — explicit user approval received.
+
+---
+
+## Units Generation — Questions Answered
+
+**Timestamp**: 2026-05-16T00:35:00Z
+**User Input**: "Done" (with all 4 [Answer]: tags filled in unit-of-work-plan.md)
+**AI Response**: Parsed answers — Q1=B (domain-sliced vertical units), Q2=C (web and mobile in parallel), Q3=A (include mobile now), Q4=B (API modules ordered by dependency). No ambiguities. Generated 3 unit artifacts: unit-of-work.md (6 units: Foundation, Auth & Household, Ingredients, Recipes, Shopping, Cook Events), unit-of-work-dependency.md (dependency matrix + execution graph), unit-of-work-story-map.md (all 28 stories mapped). Awaiting user approval.
+**Context**: Units Generation Steps 6–15 — answers parsed, artifacts generated.
 
 ---
