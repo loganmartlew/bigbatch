@@ -1,0 +1,22 @@
+{
+  "expo": {
+    "name": "BigBatch",
+    "slug": "bigbatch",
+    "version": "0.0.1",
+    "orientation": "portrait",
+    "scheme": "bigbatch",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "bundleIdentifier": "com.bigbatch.app",
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.bigbatch.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "plugins": ["expo-router"]
+  }
+}

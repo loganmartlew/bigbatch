@@ -5,7 +5,7 @@
 - **Project Name**: BigBatch
 - **Project Type**: Greenfield
 - **Start Date**: 2026-05-13T00:00:00Z
-- **Current Stage**: INCEPTION - Units Generation
+- **Current Stage**: CONSTRUCTION - Unit 0: Foundation (Functional Design)
 
 ## Workspace State
 
@@ -31,11 +31,16 @@
 - [x] User Stories
 - [x] Workflow Planning
 - [x] Application Design
-- [ ] Units Generation
+- [x] Units Generation
 
 ### 🟢 CONSTRUCTION PHASE
 
-- [ ] Per-Unit Loop
+- [ ] Unit 0: Foundation
+- [ ] Unit 1: Auth & Household
+- [ ] Unit 2: Ingredients
+- [ ] Unit 3: Recipes
+- [ ] Unit 4: Shopping
+- [ ] Unit 5: Cook Events
 - [ ] Build and Test
 
 ### 🟡 OPERATIONS PHASE
