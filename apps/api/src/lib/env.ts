@@ -21,4 +21,7 @@ export const env = {
   SESSION_SECRET: getEnvOrThrow('SESSION_SECRET'),
 
   CORS_ORIGIN: getEnvOrDefault('CORS_ORIGIN', 'http://localhost:5173'),
+
+  RESEND_API_KEY: getEnvOrThrow('RESEND_API_KEY'),
+  FRONTEND_URL: getEnvOrDefault('FRONTEND_URL', 'http://localhost:5173'),
 } as const;

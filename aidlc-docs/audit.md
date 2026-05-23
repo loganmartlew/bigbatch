@@ -206,3 +206,66 @@
 **Context**: Code Generation Part 2 (Generation) — all steps executed. Awaiting user approval.
 
 ---
+
+## Unit 0 Code Generation — Approved
+
+**Timestamp**: 2026-05-17T00:00:00Z
+**User Input**: "Continue to next unit"
+**AI Response**: Unit 0: Foundation code generation approved. Proceeding to Unit 1: Auth & Household — Functional Design.
+**Context**: Unit 0 Code Generation approval. Unit 0 marked complete in aidlc-state.md.
+
+---
+
+## Unit 1: Auth & Household — Functional Design Plan
+
+**Timestamp**: 2026-05-17T00:05:00Z
+**User Input**: (continuation from Unit 0 approval)
+**AI Response**: Created functional design plan with 8 questions covering breached password strategy, session duration, household creation flow, invite code format, household switching UX, password complexity, password reset, and member removal session handling.
+**Context**: Functional Design Part 1 — plan with questions presented to user.
+
+---
+
+## Unit 1: Functional Design — Answers Collected
+
+**Timestamp**: 2026-05-17T01:00:00Z
+**User Input**: "done" (answers provided in plan file: Q1=C skip breached check, Q2=A 30-day no auto-extend, Q3=B onboarding screen, Q4=A 6-char alphanumeric, Q5=A dropdown in header, Q6=D zxcvbn, Q7=A email-based reset, Q8=sessions not tied to households)
+**AI Response**: All answers clear, no ambiguities. Generated 3 functional design artifacts: domain-entities.md, business-rules.md, business-logic-model.md. Covers registration, login, sessions, household CRUD, invites, join flows, member management, password reset, frontend component structure.
+**Context**: Functional Design Step 5-6 — answers collected and artifacts generated.
+
+---
+
+## Unit 1: Functional Design — Change Request (Resend)
+
+**Timestamp**: 2026-05-17T01:10:00Z
+**User Input**: "We should also use resend in development, as well as logging the url."
+**AI Response**: Updated business-rules.md and business-logic-model.md — Resend used in all environments, URL additionally logged in dev.
+**Context**: Functional Design change request.
+
+---
+
+## Unit 1: Functional Design — Approved
+
+**Timestamp**: 2026-05-17T01:15:00Z
+**User Input**: "continue"
+**AI Response**: Functional Design approved. Proceeding to Code Generation Part 1 (Planning).
+**Context**: Unit 1 Functional Design approval.
+
+---
+
+## Unit 1: Code Generation Plan
+
+**Timestamp**: 2026-05-17T01:20:00Z
+**User Input**: (continuation from FD approval)
+**AI Response**: Created 13-step code generation plan. ~35 files (7 modified, ~28 new). Covers: dependency updates, schema addition, middleware updates, shared schemas, auth/household services, route handlers, plugin registration, unit tests, web auth/onboarding/household pages, mobile screens, documentation.
+**Context**: Code Generation Part 1 (Planning) — plan presented for approval.
+
+---
+
+## Unit 1: Auth & Household — Code Generation Part 2 (Execution)
+
+**Timestamp**: 2026-05-13T17:00:00Z
+**User Input**: "continue"
+**AI Response**: Executed all 13 steps of the code generation plan. Created 26 new files across API (services, routes, plugin, tests, email util), shared (schemas), web (auth pages, onboarding, household settings, auth context, household selector, root layout update), and mobile (auth screens, onboarding, join-code, household settings, auth context, layout update). Fixed packages/shared/package.json JSON parse error (literal \n chars). Added fast-check dependency for PBT. All 22 tests passing. Generated code-generation-summary.md. All plan checkboxes marked [x].
+**Context**: Code Generation Part 2 — execution complete, awaiting user approval.
+
+---

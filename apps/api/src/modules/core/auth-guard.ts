@@ -2,7 +2,12 @@ import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { lucia } from '../../lib/lucia.js';
 import { AuthenticationError } from './errors.js';
 
-const PUBLIC_ROUTES = new Set(['POST /auth/register', 'POST /auth/login']);
+const PUBLIC_ROUTES = new Set([
+  'POST /auth/register',
+  'POST /auth/login',
+  'POST /auth/forgot-password',
+  'POST /auth/reset-password',
+]);
 
 export async function authGuard(
   request: FastifyRequest,

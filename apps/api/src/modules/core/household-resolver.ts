@@ -8,8 +8,16 @@ const AUTH_ONLY_ROUTES = new Set([
   'POST /auth/register',
   'POST /auth/login',
   'POST /auth/logout',
+  'POST /auth/forgot-password',
+  'POST /auth/reset-password',
   'GET /auth/me',
   'GET /households',
+  'POST /households',
+  'POST /households/join/link',
+  'POST /households/join/code',
+  'POST /households/:id/invites',
+  'GET /households/:id/members',
+  'DELETE /households/:id/members/:userId',
 ]);
 
 export async function householdResolver(

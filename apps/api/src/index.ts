@@ -1,9 +1,11 @@
 import Fastify from 'fastify';
+import cookie from '@fastify/cookie';
 import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 import rateLimit from '@fastify/rate-limit';
 import { env } from './lib/env.js';
 import { corePlugin } from './modules/core/index.js';
+import { authPlugin } from './modules/auth/index.js';
 
 const server = Fastify({
   logger: {
@@ -14,6 +16,7 @@ const server = Fastify({
 });
 
 await server.register(helmet);
+await server.register(cookie);
 await server.register(cors, {
   origin: env.CORS_ORIGIN,
   credentials: true,
@@ -23,10 +26,9 @@ await server.register(rateLimit, {
   timeWindow: '1 minute',
 });
 await server.register(corePlugin);
+await server.register(authPlugin);
 
 // Domain module plugins registered here in later units:
-// await server.register(authPlugin, { prefix: "/auth" });
-// await server.register(householdPlugin, { prefix: "/households" });
 // await server.register(recipesPlugin, { prefix: "/recipes" });
 // await server.register(ingredientsPlugin, { prefix: "/ingredients" });
 // await server.register(shoppingListPlugin, { prefix: "/shopping-list" });

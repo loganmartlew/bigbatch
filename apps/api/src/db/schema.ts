@@ -28,6 +28,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   userHouseholds: many(userHouseholds),
   sessions: many(sessions),
   cookEvents: many(cookEvents),
+  passwordResetTokens: many(passwordResetTokens),
 }));
 
 // ─── Households ──────────────────────────────────────────────
@@ -426,3 +427,28 @@ export const cookEventsRelations = relations(cookEvents, ({ one }) => ({
     references: [users.id],
   }),
 }));
+
+// ─── Password Reset Tokens ──────────────────────────────────
+
+export const passwordResetTokens = sqliteTable('password_reset_tokens', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  userId: integer('user_id')
+    .notNull()
+    .references(() => users.id),
+  token: text('token').notNull().unique(),
+  expiresAt: text('expires_at').notNull(),
+  usedAt: text('used_at'),
+  createdAt: text('created_at')
+    .notNull()
+    .default(sql`(datetime('now'))`),
+});
+
+export const passwordResetTokensRelations = relations(
+  passwordResetTokens,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [passwordResetTokens.userId],
+      references: [users.id],
+    }),
+  }),
+);

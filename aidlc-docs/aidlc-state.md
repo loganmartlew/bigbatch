@@ -5,7 +5,7 @@
 - **Project Name**: BigBatch
 - **Project Type**: Greenfield
 - **Start Date**: 2026-05-13T00:00:00Z
-- **Current Stage**: CONSTRUCTION - Unit 0: Foundation (Functional Design)
+- **Current Stage**: CONSTRUCTION - Unit 1: Auth & Household (Functional Design)
 
 ## Workspace State
 
@@ -35,7 +35,7 @@
 
 ### 🟢 CONSTRUCTION PHASE
 
-- [ ] Unit 0: Foundation
+- [x] Unit 0: Foundation
 - [ ] Unit 1: Auth & Household
 - [ ] Unit 2: Ingredients
 - [ ] Unit 3: Recipes

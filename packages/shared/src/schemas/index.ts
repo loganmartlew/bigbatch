@@ -1,2 +1,2 @@
-// Schemas barrel — populated in later units (Unit 1+)
-export {};
+export * from './auth.js';
+export * from './household.js';
