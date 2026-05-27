@@ -6,6 +6,7 @@ import { RouterProvider, createRouter } from '@tanstack/react-router';
 import '@mantine/core/styles.css';
 import { routeTree } from './routeTree.gen';
 import { theme } from './theme';
+import { AuthProvider } from './lib/auth-context';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,9 +27,11 @@ declare module '@tanstack/react-router' {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <MantineProvider theme={theme} defaultColorScheme="light">
+    <MantineProvider theme={theme} defaultColorScheme='light'>
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
       </QueryClientProvider>
     </MantineProvider>
   </StrictMode>,

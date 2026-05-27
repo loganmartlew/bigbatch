@@ -3,18 +3,19 @@
 ## Project Information
 
 - **Project Name**: BigBatch
-- **Project Type**: Greenfield
+- **Project Type**: Web-first (Mantine v8 + TanStack Router/Query)
 - **Start Date**: 2026-05-13T00:00:00Z
-- **Current Stage**: CONSTRUCTION - Unit 1: Auth & Household (Functional Design)
+- **Current Stage**: CONSTRUCTION - Unit 1: Auth & Household (Code Complete)
 
 ## Workspace State
 
-- **Existing Code**: No
-- **Programming Languages**: N/A (greenfield)
-- **Build System**: N/A (greenfield)
-- **Project Structure**: Empty
+- **Existing Code**: Yes — apps/api, apps/web, packages/shared
+- **Programming Languages**: TypeScript (ESM)
+- **Build System**: pnpm workspaces, Turbo, Vite (web), tsx (api)
+- **Project Structure**: Monorepo — apps/api, apps/web, packages/shared
 - **Reverse Engineering Needed**: No
-- **Workspace Root**: /home/logan/Projects/bigbatch
+- **Workspace Root**: f:\Projects\bigbatch
+- **Note**: Mobile platform (`apps/mobile`) was descoped and removed from the workspace during the web-first rebaseline (2026-05).
 
 ## Code Location Rules
 
@@ -36,7 +37,7 @@
 ### 🟢 CONSTRUCTION PHASE
 
 - [x] Unit 0: Foundation
-- [ ] Unit 1: Auth & Household
+- [x] Unit 1: Auth & Household
 - [ ] Unit 2: Ingredients
 - [ ] Unit 3: Recipes
 - [ ] Unit 4: Shopping

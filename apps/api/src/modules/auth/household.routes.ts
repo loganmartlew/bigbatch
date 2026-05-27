@@ -20,7 +20,7 @@ import { ForbiddenError } from '../core/errors.js';
 
 export async function registerHouseholdRoutes(server: FastifyInstance) {
   server.get('/households', async (request, reply) => {
-    const result = await listUserHouseholds(request.user.id);
+    const result = await listUserHouseholds(request.user!.id);
     return reply.send({ data: { households: result } });
   });
 
@@ -31,7 +31,7 @@ export async function registerHouseholdRoutes(server: FastifyInstance) {
     },
     async (request, reply) => {
       const { name } = request.body as { name: string };
-      const household = await createHousehold(request.user.id, name);
+      const household = await createHousehold(request.user!.id, name);
       return reply.status(201).send({ data: { household } });
     },
   );
@@ -43,7 +43,7 @@ export async function registerHouseholdRoutes(server: FastifyInstance) {
     },
     async (request, reply) => {
       const { token } = request.body as { token: string };
-      const household = await joinByLink(request.user.id, token);
+      const household = await joinByLink(request.user!.id, token);
       return reply.send({
         data: { household: { id: household.id, name: household.name } },
       });
@@ -57,7 +57,7 @@ export async function registerHouseholdRoutes(server: FastifyInstance) {
     },
     async (request, reply) => {
       const { code } = request.body as { code: string };
-      const household = await joinByCode(request.user.id, code);
+      const household = await joinByCode(request.user!.id, code);
       return reply.send({
         data: { household: { id: household.id, name: household.name } },
       });
@@ -68,7 +68,7 @@ export async function registerHouseholdRoutes(server: FastifyInstance) {
     const { id } = request.params as { id: string };
     const householdId = parseInt(id, 10);
 
-    const invite = await generateInvite(householdId, request.user.id);
+    const invite = await generateInvite(householdId, request.user!.id);
     return reply.status(201).send({ data: invite });
   });
 
@@ -79,7 +79,7 @@ export async function registerHouseholdRoutes(server: FastifyInstance) {
     // Verify caller is a member
     const membership = await db.query.userHouseholds.findFirst({
       where: and(
-        eq(userHouseholds.userId, request.user.id),
+        eq(userHouseholds.userId, request.user!.id),
         eq(userHouseholds.householdId, householdId),
       ),
     });
@@ -97,7 +97,7 @@ export async function registerHouseholdRoutes(server: FastifyInstance) {
     const householdId = parseInt(id, 10);
     const targetUserId = parseInt(userId, 10);
 
-    await removeMember(householdId, request.user.id, targetUserId);
+    await removeMember(householdId, request.user!.id, targetUserId);
     return reply.status(204).send();
   });
 }

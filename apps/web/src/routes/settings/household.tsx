@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useState, useEffect } from 'react';
 import { api } from '../../lib/api-client';
-import { getActiveHouseholdId } from '../../lib/household-context';
+import { useActiveHouseholdId } from '../../lib/household-context';
 
 interface Member {
   userId: number;
@@ -23,24 +23,48 @@ export const Route = createFileRoute('/settings/household')({
 });
 
 function HouseholdSettingsPage() {
-  const householdId = getActiveHouseholdId();
+  const householdId = useActiveHouseholdId();
   const [members, setMembers] = useState<Member[]>([]);
   const [invite, setInvite] = useState<Invite | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!householdId) return;
+    if (!householdId) {
+      setMembers([]);
+      setInvite(null);
+      setLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+
+    setLoading(true);
+    setError('');
+    setInvite(null);
+
     api
       .get<{ members: Member[] }>(`/households/${householdId}/members`)
       .then(data => {
+        if (cancelled) {
+          return;
+        }
+
         setMembers(data.members);
         setLoading(false);
       })
       .catch((err: any) => {
+        if (cancelled) {
+          return;
+        }
+
         setError(err.message);
         setLoading(false);
       });
+
+    return () => {
+      cancelled = true;
+    };
   }, [householdId]);
 
   async function handleGenerateInvite() {
@@ -71,11 +95,8 @@ function HouseholdSettingsPage() {
     return <p>Loading…</p>;
   }
 
-  const currentUserIsOwner = members.some(
-    m => m.role === 'owner',
-    // Note: we'd compare with current user ID in a real check;
-    // for now the API enforces ownership on remove/invite endpoints.
-  );
+  // Note: we'd compare with current user ID in a real check;
+  // for now the API enforces ownership on remove/invite endpoints.
 
   return (
     <div>

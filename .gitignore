@@ -4,6 +4,7 @@ node_modules/
 # Build outputs
 dist/
 .turbo/
+.tanstack/
 
 # Environment
 .env
@@ -20,6 +21,3 @@ Thumbs.db
 
 # Test
 coverage/
-
-# Drizzle
-apps/api/drizzle/

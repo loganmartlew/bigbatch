@@ -6,7 +6,6 @@ import {
   userHouseholds,
   householdInvites,
   shoppingCategories,
-  users,
 } from '../../db/schema.js';
 import {
   ValidationError,

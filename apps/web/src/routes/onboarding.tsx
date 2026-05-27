@@ -1,3 +1,16 @@
+import {
+  Alert,
+  Button,
+  Container,
+  Group,
+  Paper,
+  Stack,
+  Text,
+  TextInput,
+  Title,
+  UnstyledButton,
+} from '@mantine/core';
+import { IconAlertCircle, IconHome, IconUserPlus } from '@tabler/icons-react';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { api } from '../lib/api-client';
@@ -24,9 +37,7 @@ function OnboardingPage() {
     try {
       const data = await api.post<{ household: { id: number } }>(
         '/households',
-        {
-          name,
-        },
+        { name },
       );
       setActiveHouseholdId(data.household.id);
       await refreshUser();
@@ -59,65 +70,131 @@ function OnboardingPage() {
 
   if (mode === 'choose') {
     return (
-      <div>
-        <h2>Welcome to BigBatch!</h2>
-        <p>To get started, create a new household or join an existing one.</p>
-        <button onClick={() => setMode('create')}>Create a Household</button>
-        <button onClick={() => setMode('join')}>Join with Code</button>
-      </div>
+      <Container size={480} py='xl'>
+        <Title ta='center' order={2}>
+          Welcome to BigBatch!
+        </Title>
+        <Text c='dimmed' size='sm' ta='center' mt='xs'>
+          To get started, create a new household or join an existing one.
+        </Text>
+
+        <Group grow align='stretch' mt='xl'>
+          <UnstyledButton
+            onClick={() => setMode('create')}
+            style={{ display: 'block', flex: 1 }}
+          >
+            <Paper withBorder p='lg' radius='md' h='100%'>
+              <Stack align='center' gap='xs'>
+                <IconHome size={32} stroke={1.5} />
+                <Text fw={500}>Create a Household</Text>
+                <Text c='dimmed' size='xs' ta='center'>
+                  Start fresh with your own kitchen
+                </Text>
+              </Stack>
+            </Paper>
+          </UnstyledButton>
+          <UnstyledButton
+            onClick={() => setMode('join')}
+            style={{ display: 'block', flex: 1 }}
+          >
+            <Paper withBorder p='lg' radius='md' h='100%'>
+              <Stack align='center' gap='xs'>
+                <IconUserPlus size={32} stroke={1.5} />
+                <Text fw={500}>Join with Code</Text>
+                <Text c='dimmed' size='xs' ta='center'>
+                  Enter an invite code from someone
+                </Text>
+              </Stack>
+            </Paper>
+          </UnstyledButton>
+        </Group>
+      </Container>
     );
   }
 
   if (mode === 'create') {
     return (
-      <div>
-        <h2>Create a Household</h2>
-        <form onSubmit={handleCreate}>
-          <div>
-            <label htmlFor='name'>Household Name</label>
-            <input
-              id='name'
-              value={name}
-              onChange={e => setName(e.target.value)}
-              required
-              maxLength={100}
-            />
-          </div>
-          {error && <p style={{ color: 'red' }}>{error}</p>}
-          <button type='submit' disabled={loading}>
-            {loading ? 'Creating…' : 'Create'}
-          </button>
-          <button type='button' onClick={() => setMode('choose')}>
-            Back
-          </button>
-        </form>
-      </div>
+      <Container size={420} py='xl'>
+        <Title ta='center' order={2}>
+          Create a Household
+        </Title>
+
+        <Paper withBorder shadow='md' p='xl' mt='lg' radius='md'>
+          <form onSubmit={handleCreate}>
+            <Stack>
+              {error && (
+                <Alert
+                  color='red'
+                  icon={<IconAlertCircle size={16} />}
+                  variant='light'
+                >
+                  {error}
+                </Alert>
+              )}
+              <TextInput
+                label='Household name'
+                placeholder='e.g. The Smith Kitchen'
+                required
+                maxLength={100}
+                value={name}
+                onChange={e => setName(e.currentTarget.value)}
+              />
+              <Button type='submit' loading={loading} fullWidth>
+                Create
+              </Button>
+              <Button
+                variant='subtle'
+                onClick={() => setMode('choose')}
+                fullWidth
+              >
+                Back
+              </Button>
+            </Stack>
+          </form>
+        </Paper>
+      </Container>
     );
   }
 
   return (
-    <div>
-      <h2>Join a Household</h2>
-      <form onSubmit={handleJoin}>
-        <div>
-          <label htmlFor='code'>Invite Code</label>
-          <input
-            id='code'
-            value={code}
-            onChange={e => setCode(e.target.value)}
-            required
-            maxLength={6}
-            placeholder='e.g. ABC123'
-          />
-        </div>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button type='submit' disabled={loading}>
-          {loading ? 'Joining…' : 'Join'}
-        </button>
-        <button type='button' onClick={() => setMode('choose')}>
-          Back
-        </button>
-      </form>
-    </div>
+    <Container size={420} py='xl'>
+      <Title ta='center' order={2}>
+        Join a Household
+      </Title>
+
+      <Paper withBorder shadow='md' p='xl' mt='lg' radius='md'>
+        <form onSubmit={handleJoin}>
+          <Stack>
+            {error && (
+              <Alert
+                color='red'
+                icon={<IconAlertCircle size={16} />}
+                variant='light'
+              >
+                {error}
+              </Alert>
+            )}
+            <TextInput
+              label='Invite code'
+              placeholder='e.g. ABC123'
+              required
+              maxLength={6}
+              value={code}
+              onChange={e => setCode(e.currentTarget.value)}
+            />
+            <Button type='submit' loading={loading} fullWidth>
+              Join
+            </Button>
+            <Button
+              variant='subtle'
+              onClick={() => setMode('choose')}
+              fullWidth
+            >
+              Back
+            </Button>
+          </Stack>
+        </form>
+      </Paper>
+    </Container>
   );
 }

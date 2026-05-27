@@ -1,4 +1,17 @@
 import {
+  Alert,
+  Anchor,
+  Center,
+  Container,
+  Loader,
+  Paper,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core';
+import { IconAlertCircle } from '@tabler/icons-react';
+import {
+  Link,
   createFileRoute,
   useSearch,
   useNavigate,
@@ -18,13 +31,12 @@ export const Route = createFileRoute('/join')({
 function JoinByLinkPage() {
   const { token } = useSearch({ from: '/join' });
   const navigate = useNavigate();
-  const { isAuthenticated, refreshUser } = useAuth();
+  const { isAuthenticated, isLoading, refreshUser } = useAuth();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate({ to: '/login' });
+    if (isLoading) {
       return;
     }
 
@@ -34,33 +46,85 @@ function JoinByLinkPage() {
       return;
     }
 
-    api
-      .post<{ household: { id: number; name: string } }>(
-        '/households/join/link',
-        {
-          token,
-        },
-      )
-      .then(data => {
+    if (!isAuthenticated) {
+      navigate({
+        to: '/login',
+        search: { redirect: `/join?token=${encodeURIComponent(token)}` },
+        replace: true,
+      });
+      return;
+    }
+
+    let cancelled = false;
+
+    const joinHousehold = async () => {
+      try {
+        const data = await api.post<{
+          household: { id: number; name: string };
+        }>('/households/join/link', { token });
+
+        if (cancelled) {
+          return;
+        }
+
         setActiveHouseholdId(data.household.id);
-        refreshUser();
+
+        await refreshUser();
+
+        if (cancelled) {
+          return;
+        }
+
         navigate({ to: '/' });
-      })
-      .catch((err: any) => {
+      } catch (err: any) {
+        if (cancelled) {
+          return;
+        }
+
         setError(err.message || 'Failed to join household');
         setLoading(false);
-      });
-  }, [token, isAuthenticated, navigate, refreshUser]);
+      }
+    };
+
+    void joinHousehold();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [token, isAuthenticated, isLoading, navigate, refreshUser]);
 
   if (loading) {
-    return <p>Joining household…</p>;
+    return (
+      <Center py='xl'>
+        <Stack align='center' gap='sm'>
+          <Loader size='lg' />
+          <Text c='dimmed' size='sm'>
+            Joining household…
+          </Text>
+        </Stack>
+      </Center>
+    );
   }
 
   return (
-    <div>
-      <h2>Join Household</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <a href='/'>Go home</a>
-    </div>
+    <Container size={420} py='xl'>
+      <Paper withBorder shadow='md' p='xl' radius='md'>
+        <Stack>
+          <Title order={3}>Join Household</Title>
+          {error && (
+            <Alert
+              color='red'
+              icon={<IconAlertCircle size={16} />}
+              variant='light'
+            >
+              {error}
+            </Alert>
+          )}
+          <Anchor component={Link} to='/'>
+            Go home
+          </Anchor>
+        </Stack>
+      </Paper>
+    </Container>
   );
 }

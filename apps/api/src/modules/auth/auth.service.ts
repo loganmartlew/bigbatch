@@ -7,7 +7,6 @@ import {
   users,
   sessions,
   userHouseholds,
-  households,
   passwordResetTokens,
 } from '../../db/schema.js';
 import { lucia } from '../../lib/lucia.js';

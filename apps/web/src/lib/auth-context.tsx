@@ -6,7 +6,7 @@ import {
   useCallback,
   type ReactNode,
 } from 'react';
-import { api, ApiClientError } from './api-client';
+import { api } from './api-client';
 import {
   clearActiveHouseholdId,
   setActiveHouseholdId,

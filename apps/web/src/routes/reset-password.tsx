@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { Link, createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 import { api } from '../lib/api-client';
 
@@ -7,7 +7,6 @@ export const Route = createFileRoute('/reset-password')({
 });
 
 function ResetPasswordPage() {
-  const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);
   const token = params.get('token') ?? '';
 
@@ -35,7 +34,7 @@ function ResetPasswordPage() {
       <div>
         <h2>Invalid Reset Link</h2>
         <p>No reset token found. Please request a new password reset.</p>
-        <a href='/forgot-password'>Request reset</a>
+        <Link to='/forgot-password'>Request reset</Link>
       </div>
     );
   }
@@ -45,7 +44,9 @@ function ResetPasswordPage() {
       <div>
         <h2>Password Reset</h2>
         <p>Your password has been reset successfully.</p>
-        <a href='/login'>Log in</a>
+        <Link to='/login' search={{ redirect: undefined }}>
+          Log in
+        </Link>
       </div>
     );
   }
