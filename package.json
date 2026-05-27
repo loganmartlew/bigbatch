@@ -8,7 +8,6 @@
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
     "web:dev": "turbo run dev --filter=@bigbatch/web",
-    "mobile:dev": "turbo run dev --filter=@bigbatch/mobile",
     "api:dev": "turbo run dev --filter=@bigbatch/api",
     "db:generate": "turbo run db:generate --filter=@bigbatch/api",
     "db:migrate": "turbo run db:migrate --filter=@bigbatch/api"

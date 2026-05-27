@@ -13,8 +13,8 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "test": "vitest run --passWithNoTests",
+    "test:watch": "vitest --passWithNoTests"
   },
   "dependencies": {
     "@sinclair/typebox": "^0.34.0"

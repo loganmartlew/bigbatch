@@ -1,6 +1,15 @@
-import { createRootRoute, Outlet, useNavigate } from '@tanstack/react-router';
-import { AuthProvider, useAuth } from '../lib/auth-context';
-import { HouseholdSelector } from '../components/household-selector';
+import {
+  AppShell,
+  Badge,
+  Button,
+  Container,
+  Group,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core';
+import { IconArrowRight, IconSparkles } from '@tabler/icons-react';
+import { createRootRoute, Outlet } from '@tanstack/react-router';
 
 export const Route = createRootRoute({
   component: RootLayout,
@@ -16,42 +25,55 @@ const PUBLIC_ROUTES = [
 
 function RootLayout() {
   return (
-    <AuthProvider>
-      <AppShell />
-    </AuthProvider>
-  );
-}
+    <AppShell header={{ height: 84 }} padding='md'>
+      <AppShell.Header>
+        <Container
+          size='xl'
+          style={{
+            height: '100%',
+          }}
+        >
+          <Group
+            justify='space-between'
+            style={{
+              height: '100%',
+            }}
+          >
+            <Stack gap={2}>
+              <Group gap='xs'>
+                <Title order={3}>BigBatch</Title>
+                <Badge
+                  color='orange'
+                  leftSection={<IconSparkles size={12} />}
+                  variant='light'
+                >
+                  Web-first
+                </Badge>
+              </Group>
+              <Text c='dimmed' size='sm'>
+                A calmer, polished planning surface for bulk cooking.
+              </Text>
+            </Stack>
 
-function AppShell() {
-  const { isAuthenticated, isLoading, user, logout } = useAuth();
-  const navigate = useNavigate();
-  const path = window.location.pathname;
-  const isPublicRoute = PUBLIC_ROUTES.some(r => path.startsWith(r));
+            <Group gap='sm' visibleFrom='sm'>
+              <Button component='a' href='#foundation' variant='default'>
+                Foundation
+              </Button>
+              <Button
+                component='a'
+                href='#roadmap'
+                rightSection={<IconArrowRight size={16} />}
+              >
+                Roadmap
+              </Button>
+            </Group>
+          </Group>
+        </Container>
+      </AppShell.Header>
 
-  if (isLoading) {
-    return <p>Loading…</p>;
-  }
-
-  if (!isAuthenticated && !isPublicRoute) {
-    navigate({ to: '/login' });
-    return null;
-  }
-
-  return (
-    <div>
-      <header style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-        <h1>BigBatch</h1>
-        {isAuthenticated && (
-          <>
-            <HouseholdSelector />
-            <span>{user?.firstName}</span>
-            <button onClick={() => logout()}>Log out</button>
-          </>
-        )}
-      </header>
-      <main>
+      <AppShell.Main>
         <Outlet />
-      </main>
-    </div>
+      </AppShell.Main>
+    </AppShell>
   );
 }

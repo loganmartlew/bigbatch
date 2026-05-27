@@ -1,7 +1,15 @@
 import type { FastifyInstance } from 'fastify';
-import { AppError } from './errors.js';
 import { ERROR_CODES } from '@bigbatch/shared';
 import type { ApiErrorResponse } from '@bigbatch/shared';
+import { AppError } from './errors.js';
+
+type ValidationLikeError = Error & {
+  validation: unknown;
+};
+
+function isValidationLikeError(error: unknown): error is ValidationLikeError {
+  return typeof error === 'object' && error !== null && 'validation' in error;
+}
 
 export function registerErrorHandler(server: FastifyInstance): void {
   server.setErrorHandler((error, request, reply) => {
@@ -22,7 +30,7 @@ export function registerErrorHandler(server: FastifyInstance): void {
     }
 
     // Fastify validation errors
-    if (error.validation) {
+    if (isValidationLikeError(error)) {
       request.log.warn({ err: error }, 'Validation error');
 
       const body: ApiErrorResponse = {

@@ -2,23 +2,23 @@
 
 ## Package Dependency Graph
 
-```
+```text
 packages/shared (no external app dependencies)
-    ^           ^           ^
-    |           |           |
-apps/api    apps/web    apps/mobile
+    ^           ^
+    |           |
+apps/api    apps/web
 ```
 
 - `packages/shared` depends on nothing else in the monorepo
-- `apps/api`, `apps/web`, and `apps/mobile` all depend on `packages/shared`
-- `apps/web` and `apps/mobile` do NOT depend on each other
-- `apps/web` and `apps/mobile` communicate with `apps/api` over HTTP (REST)
+- `apps/api` and `apps/web` both depend on `packages/shared`
+- `apps/web` communicates with `apps/api` over HTTP (REST)
+- Future native clients are intentionally outside the active workspace and are not current package dependencies
 
 ---
 
 ## Internal API Module Dependencies
 
-```
+```text
 core (middleware, auth guard, error handler, logger)
   ^       ^       ^       ^       ^
   |       |       |       |       |
@@ -33,14 +33,14 @@ All domain modules depend on `core` for middleware (auth, validation, rate limit
 
 ### Module-to-Module Dependencies
 
-| Module          | Depends On (internal) | Depends On (shared)                                                    | External                                                              |
-| --------------- | --------------------- | ---------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| `core`          | —                     | `shared/schemas` (TypeBox schemas for validation)                      | Fastify plugins (@fastify/rate-limit, @fastify/cors, @fastify/helmet) |
-| `auth`          | `core`                | `shared/types`, `shared/schemas`                                       | Lucia Auth, argon2                                                    |
-| `recipes`       | `core`                | `shared/types`, `shared/schemas`, `shared/scaling`, `shared/nutrition` | Drizzle ORM                                                           |
-| `ingredients`   | `core`                | `shared/types`, `shared/schemas`                                       | Drizzle ORM, OpenFoodFacts API (HTTP)                                 |
-| `shopping-list` | `core`                | `shared/types`, `shared/schemas`, `shared/shopping`                    | Drizzle ORM                                                           |
-| `cook-events`   | `core`                | `shared/types`, `shared/schemas`                                       | Drizzle ORM                                                           |
+| Module | Depends On (internal) | Depends On (shared) | External |
+| --- | --- | --- | --- |
+| `core` | — | `shared/schemas` (TypeBox schemas for validation) | Fastify plugins (@fastify/rate-limit, @fastify/cors, @fastify/helmet) |
+| `auth` | `core` | `shared/types`, `shared/schemas` | Lucia Auth, argon2 |
+| `recipes` | `core` | `shared/types`, `shared/schemas`, `shared/scaling`, `shared/nutrition` | Drizzle ORM |
+| `ingredients` | `core` | `shared/types`, `shared/schemas` | Drizzle ORM, OpenFoodFacts API (HTTP) |
+| `shopping-list` | `core` | `shared/types`, `shared/schemas`, `shared/shopping` | Drizzle ORM |
+| `cook-events` | `core` | `shared/types`, `shared/schemas` | Drizzle ORM |
 
 **No circular dependencies** — all arrows flow from modules → core and modules → shared.
 
@@ -50,8 +50,8 @@ All domain modules depend on `core` for middleware (auth, validation, rate limit
 
 ### Flow 1: Create Recipe with Nutrition
 
-```
-Client (web/mobile)
+```text
+Client (web)
   |
   | POST /recipes { name, ingredients[], instructions[], batchSize }
   v
@@ -70,8 +70,8 @@ Client receives { recipe, nutrition }
 
 ### Flow 2: Scale Recipe
 
-```
-Client
+```text
+Client (web)
   |
   | POST /recipes/:id/scale { targetPortions }
   v
@@ -88,8 +88,8 @@ Client receives scaled view
 
 ### Flow 3: Add Recipe to Shopping List
 
-```
-Client
+```text
+Client (web)
   |
   | POST /shopping-list/add-recipe { recipeId, portions }
   v
@@ -109,8 +109,8 @@ Client receives { items[] }
 
 ### Flow 4: OpenFoodFacts Search
 
-```
-Client
+```text
+Client (web)
   |
   | GET /ingredients/search-openfoodfacts?query=chicken
   v
@@ -129,8 +129,8 @@ Client receives { results[] }
 
 ### Flow 5: Authentication Flow
 
-```
-Client
+```text
+Client (web)
   |
   | POST /auth/login { email, password }
   v
@@ -147,30 +147,30 @@ apps/api :: auth route
   |     +-- return { user, households[] }
   v
 Client receives { user, households[] } + session cookie
-Client stores first household as active in localStorage/AsyncStorage
+Client stores the active household in localStorage
 ```
 
 ---
 
 ## Communication Patterns
 
-| Communication        | Pattern                    | Protocol                 |
-| -------------------- | -------------------------- | ------------------------ |
-| Web → API            | HTTP REST                  | HTTPS (TLS)              |
-| Mobile → API         | HTTP REST                  | HTTPS (TLS)              |
-| API → Turso          | libSQL HTTP client         | HTTPS (TLS, SECURITY-01) |
-| API → OpenFoodFacts  | HTTP client (fetch/undici) | HTTPS                    |
-| API modules → shared | Direct function import     | In-process (monorepo)    |
-| Web/Mobile → shared  | Direct function import     | Bundled at build time    |
+| Communication | Pattern | Protocol |
+| --- | --- | --- |
+| Web → API | HTTP REST | HTTPS (TLS) |
+| API → Turso | libSQL HTTP client | HTTPS (TLS, SECURITY-01) |
+| API → OpenFoodFacts | HTTP client (fetch/undici) | HTTPS |
+| API modules → shared | Direct function import | In-process (monorepo) |
+| Web → shared | Direct function import | Bundled at build time |
+
+Future native apps will use the same Web/API contract style (HTTPS REST) when they are introduced, but they are not part of the current deployment graph.
 
 ---
 
 ## Deployment Boundaries
 
-| Package           | Deployed As                          | Where                                           |
-| ----------------- | ------------------------------------ | ----------------------------------------------- |
-| `apps/web`        | Static SPA (HTML/JS/CSS)             | Cloudflare Pages                                |
-| `apps/mobile`     | Native app (iOS/Android)             | App Store / Google Play via Expo EAS            |
-| `apps/api`        | Node.js server (Docker or buildpack) | PaaS (Fly.io / Railway)                         |
-| `packages/shared` | Not deployed independently           | Bundled into api, web, and mobile at build time |
-| Database          | Turso managed libSQL                 | Turso cloud                                     |
+| Package | Deployed As | Where |
+| --- | --- | --- |
+| `apps/web` | Static SPA (HTML/JS/CSS) | Cloudflare Pages |
+| `apps/api` | Node.js server (Docker or buildpack) | PaaS (Fly.io / Railway) |
+| `packages/shared` | Not deployed independently | Bundled into api and web at build time |
+| Database | Turso managed libSQL | Turso cloud |
