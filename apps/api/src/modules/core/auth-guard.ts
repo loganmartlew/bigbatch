@@ -14,7 +14,8 @@ export async function authGuard(
     return;
   }
 
-  const sessionId = request.cookies?.['session'] ?? null;
+  const cookieHeader = request.headers.cookie;
+  const sessionId = cookieHeader ? lucia.readSessionCookie(cookieHeader) : null;
 
   if (!sessionId) {
     throw new AuthenticationError();
@@ -27,10 +28,10 @@ export async function authGuard(
   }
 
   request.user = {
-    id: user.id as number,
-    email: user.email as string,
-    firstName: user.firstName as string,
-    lastName: user.lastName as string,
+    id: user.id,
+    email: user.email,
+    firstName: user.firstName,
+    lastName: user.lastName,
   };
   request.sessionId = session.id;
 }
@@ -42,12 +43,12 @@ export function registerAuthGuard(server: FastifyInstance): void {
 // Fastify type augmentation
 declare module 'fastify' {
   interface FastifyRequest {
-    user: {
+    user?: {
       id: number;
       email: string;
       firstName: string;
       lastName: string;
     };
-    sessionId: string;
+    sessionId?: string;
   }
 }

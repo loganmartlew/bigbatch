@@ -2,7 +2,7 @@
 
 ## Overview
 
-BigBatch is structured as a **monorepo** (pnpm workspaces + Turborepo) with 4 packages. The API is organised as **modular domain plugins** (Fastify plugins), each self-contained with routes, services, and repositories.
+BigBatch is structured as a **monorepo** (pnpm workspaces + Turborepo) with 3 active packages. The API is organised as **modular domain plugins** (Fastify plugins), each self-contained with routes, services, and repositories. The current client scope is web-first; native apps are deferred and therefore not represented as active components in this inventory.
 
 ---
 
@@ -78,47 +78,39 @@ BigBatch is structured as a **monorepo** (pnpm workspaces + Turborepo) with 4 pa
 
 ---
 
-## Package: `apps/web` (Vite + React SPA)
+## Package: `apps/web` (Vite + React + Mantine SPA)
 
 ### Component Group: `pages`
 
 - **Purpose**: Route-level page components
 - **Key Pages**: Login, Register, Onboarding (create/join household), Recipes List, Recipe Detail, Recipe Editor, Ingredient Library, Shopping List, Cook Mode, Household Settings, Household Switcher
+- **Notes**: Page shells should use Mantine layout primitives and shared section patterns for a consistent, polished UI
 
 ### Component Group: `features`
 
 - **Purpose**: Feature-specific UI components and hooks
 - **Subgroups**: `recipes`, `ingredients`, `shopping-list`, `cook-mode`, `cook-history`, `auth`, `household`
-- **Responsibilities**: Feature-specific forms, lists, cards, modals; TanStack Query hooks for API calls
+- **Responsibilities**: Feature-specific forms, lists, cards, drawers/modals, and TanStack Query hooks for API calls
 
 ### Component Group: `ui`
 
-- **Purpose**: Shared presentational components (buttons, inputs, modals, layout)
+- **Purpose**: Shared presentational components built on Mantine (app shell, section headers, stat cards, buttons, inputs, empty states)
 
 ### Component Group: `lib`
 
-- **Purpose**: Client-side utilities — API client instance, auth helpers, wake-lock wrapper
+- **Purpose**: Client-side utilities — API client instance, auth helpers, household selection storage, wake-lock wrapper
+
+### Component Group: `theme`
+
+- **Purpose**: Central Mantine theme, color choices, spacing/radius defaults, and shared UI tokens
 
 ---
 
-## Package: `apps/mobile` (React Native / Expo)
+## Deferred Native Clients (future phase)
 
-### Component Group: `screens`
-
-- **Purpose**: Screen-level components (analogous to web `pages`)
-- **Key Screens**: Login, Register, Onboarding, Recipes, Recipe Detail, Recipe Editor, Ingredient Library, Shopping List, Cook Mode, Household Settings
-
-### Component Group: `features`
-
-- **Purpose**: Feature-specific UI components and hooks (mirrors web `features` where possible; shared hooks via `packages/shared`)
-
-### Component Group: `ui`
-
-- **Purpose**: Shared presentational components (React Native equivalents)
-
-### Component Group: `lib`
-
-- **Purpose**: Mobile-specific utilities — API client, secure storage for session tokens, wake-lock (expo-keep-awake)
+- **Status**: Not part of the active workspace
+- **Expected direction**: Fully native iOS + Android clients consuming the existing REST API
+- **Architectural implication**: Keep UI concerns isolated to the web package and avoid assumptions that native clients will reuse React components
 
 ---
 
@@ -126,15 +118,15 @@ BigBatch is structured as a **monorepo** (pnpm workspaces + Turborepo) with 4 pa
 
 ### Module: `types`
 
-- **Purpose**: TypeScript type definitions for the entire domain
+- **Purpose**: TypeScript type definitions for the current domain
 - **Exports**: `Recipe`, `Ingredient`, `NutritionInfo`, `ShoppingList`, `ShoppingListItem`, `CookEvent`, `User`, `UserHousehold`, `Household`, `Unit`
 - **Also**: API request/response types, error types
 
 ### Module: `schemas`
 
-- **Purpose**: Runtime validation schemas (TypeBox or Zod) matching the type definitions
+- **Purpose**: Runtime validation schemas (TypeBox or Zod-compatible shapes) matching the type definitions
 - **Exports**: `CreateRecipeSchema`, `UpdateRecipeSchema`, `CreateIngredientSchema`, `ScaleRecipeSchema`, etc.
-- **Used by**: API (request validation), web/mobile (form validation)
+- **Used by**: API (request validation), web (form validation), and future client code via the API contract
 
 ### Module: `nutrition`
 

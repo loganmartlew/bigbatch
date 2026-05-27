@@ -2,13 +2,13 @@
 
 ## Intent Analysis
 
-| Dimension              | Value                                                                                                                                               |
-| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **User Request**       | Build a bulk-cooking companion app called BigBatch for planning, cooking, and tracking bulk meals with macro/calorie awareness and reusable recipes |
-| **Request Type**       | New Project (greenfield)                                                                                                                            |
-| **Scope**              | Multiple components — recipes, ingredients/nutrition, shopping list, cook mode, cook history, multi-user household, web + mobile                    |
-| **Complexity**         | Moderate — clear domain model, well-scoped features, several integration points (OpenFoodFacts, auth, mobile)                                       |
-| **Requirements Depth** | Standard                                                                                                                                            |
+| Dimension              | Value                                                                                                                                                                                                                                   |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **User Request**       | Build a bulk-cooking companion app called BigBatch for planning, cooking, and tracking bulk meals with macro/calorie awareness and reusable recipes. Current update: pause active mobile delivery, move future mobile to fully native clients, and adopt Mantine for the web UI. |
+| **Request Type**       | New Project (greenfield) with scope refinement during foundation construction                                                                                                                                                           |
+| **Scope**              | Multiple components — recipes, ingredients/nutrition, shopping list, cook mode, cook history, multi-user households, web + API in the current phase; native mobile deferred                                                         |
+| **Complexity**         | Moderate — clear domain model, several integration points (OpenFoodFacts, auth), and a design-system migration while construction is already in progress                                                                              |
+| **Requirements Depth** | Standard                                                                                                                                                                                                                                |
 
 ---
 
@@ -49,9 +49,9 @@
 
 ### FR-05: Cook Mode
 
-- **FR-05.1**: Users can open a recipe in cook mode — a clean, large-text, distraction-free view of the recipe instructions.
+- **FR-05.1**: Users can open a recipe in cook mode on the web app — a clean, large-text, distraction-free view of the recipe instructions.
 - **FR-05.2**: Cook mode displays a checkable step list so users can tick off steps as they cook.
-- **FR-05.3**: Cook mode activates a screen wake-lock to prevent the device screen from turning off while cooking.
+- **FR-05.3**: Cook mode activates a screen wake-lock where the platform supports it.
 
 ### FR-06: Cooking History
 
@@ -62,14 +62,21 @@
 ### FR-07: User & Household Management
 
 - **FR-07.1**: Users register and sign in with email and password.
-- **FR-07.2**: A user belongs to one household.
+- **FR-07.2**: A user can belong to one or more households.
 - **FR-07.3**: Household members share recipes, ingredients, shopping lists, and cook history.
 - **FR-07.4**: There must be a mechanism for users to join an existing household (e.g., invite link or code).
+- **FR-07.5**: The currently active household is chosen in the client UI and sent with each household-scoped request.
 
 ### FR-08: Units of Measurement
 
 - **FR-08.1**: The app supports metric units (g, kg, ml, l) as primary units plus common kitchen units (tbsp, tsp, cup) and a generic "item" unit.
 - **FR-08.2**: Users select the unit per ingredient when creating/editing recipes.
+
+### FR-09: Current Client Scope
+
+- **FR-09.1**: The current delivery scope is a polished web application backed by the shared API and domain packages.
+- **FR-09.2**: Future mobile support will be implemented as fully native iOS and Android apps in a later phase.
+- **FR-09.3**: The backend API and shared domain contracts must stay client-agnostic so future native clients can integrate cleanly.
 
 ---
 
@@ -77,7 +84,7 @@
 
 ### NFR-01: Performance
 
-- The web and mobile apps should load and be interactive within 3 seconds on a standard broadband connection.
+- The web app should load and be interactive within 3 seconds on a standard broadband connection.
 - Recipe scaling, nutrition calculation, and shopping list consolidation should complete in under 500 ms.
 
 ### NFR-02: Availability
@@ -90,15 +97,15 @@
   - **SECURITY-01**: SQLite/Turso database with encryption at rest; all connections over TLS.
   - **SECURITY-04**: HTTP security headers on all web responses (CSP, HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy).
   - **SECURITY-05**: Fastify schema-first input validation on all API endpoints.
-  - **SECURITY-08**: All endpoints authenticated by default; object-level authorization (users can only access their own household's data); CORS restricted to known origins.
+  - **SECURITY-08**: All endpoints authenticated by default; object-level authorization (users can only access households they belong to); CORS restricted to known origins.
   - **SECURITY-11**: Rate limiting on public-facing endpoints.
   - **SECURITY-12**: Self-managed auth — adaptive password hashing (argon2 or bcrypt), MFA support for admin accounts, session management with secure/httpOnly/sameSite cookies, brute-force protection on login.
 
 ### NFR-04: Testing
 
 - Full property-based testing enforced (PBT-01 through PBT-10). Key implications:
-  - **PBT-09**: `fast-check` as the PBT framework (TypeScript everywhere).
-  - Round-trip PBT for serialization/deserialization of recipes, ingredients, nutrition data.
+  - **PBT-09**: `fast-check` as the PBT framework for the active TypeScript codebase.
+  - Round-trip PBT for serialization/deserialization of recipes, ingredients, and nutrition data.
   - Invariant PBT for scaling calculations (total nutrition scales linearly; ingredient count preserved).
   - Idempotency PBT for shopping list consolidation (consolidating twice = consolidating once).
   - Stateful PBT for shopping list state (add recipes, mark items, tick off).
@@ -106,17 +113,25 @@
 
 ### NFR-05: Maintainability
 
-- TypeScript everywhere (backend, web, mobile, shared packages) for consistency and type safety.
-- Monorepo with shared packages for domain types, validation schemas, and business logic.
+- TypeScript is used across the active backend, web, and shared packages for consistency and type safety.
+- The monorepo should keep domain types, validation schemas, and pure business logic in shared packages while keeping the API boundary stable for future native clients.
 
 ### NFR-06: Scalability
 
 - Designed for household-scale (1–10 concurrent users). No need for horizontal scaling at launch; architecture should not preclude it.
 
+### NFR-07: Web Experience
+
+- The current web app must use Mantine as its UI library.
+- The web foundation should look polished and cohesive, with consistent spacing, hierarchy, theming, and responsive layout behavior.
+- Shared UI patterns should favor accessible Mantine primitives over ad-hoc styling.
+
 ---
 
 ## 3. Explicitly Out of Scope
 
+- Current-cycle native iOS and Android apps (deferred to a later phase)
+- Cross-platform mobile frameworks for the active implementation
 - Use-by / expiry tracking
 - Freezer location or multi-house features
 - Meal scheduling / weekly planners
@@ -127,26 +142,28 @@
 
 ## 4. Tech Stack Decisions
 
-| Decision       | Choice                               | Detail                                                                    |
-| -------------- | ------------------------------------ | ------------------------------------------------------------------------- |
-| Mobile         | React Native (Expo)                  | Cross-platform iOS + Android; code sharing with web                       |
-| Backend        | TypeScript + Fastify                 | Schema-first validation; `fast-check` PBT; same language as frontend      |
-| Database       | SQLite via Turso                     | Managed, replicated, edge-optimized; libSQL for multi-user HTTP access    |
-| Authentication | Self-managed (Lucia Auth or Auth.js) | Full control; SECURITY-12 compliance owned by us                          |
-| API style      | REST + OpenAPI                       | Typed client generation; universal tooling                                |
-| Web frontend   | Vite + React (SPA)                   | Static SPA; deployed to CDN edge                                          |
-| Repo structure | Monorepo (pnpm workspaces)           | `apps/web`, `apps/mobile`, `apps/api`, `packages/shared`                  |
-| Hosting — Web  | Cloudflare Pages                     | Static SPA on CDN edge                                                    |
-| Hosting — API  | PaaS (e.g., Fly.io or Railway)       | Managed TLS, secrets, logging                                             |
-| Hosting — DB   | Turso (managed)                      | Embedded libSQL, replicated to cloud                                      |
-| PBT framework  | fast-check                           | TypeScript; integrates with Vitest/Jest; shrinking + seed reproducibility |
+| Decision              | Choice                                   | Detail                                                                                 |
+| --------------------- | ---------------------------------------- | -------------------------------------------------------------------------------------- |
+| Current delivery      | Web-first                                | Active implementation is `apps/web`, `apps/api`, and `packages/shared`                |
+| Future mobile         | Fully native                             | iOS + Android planned later; not part of the current construction scope                |
+| Backend               | TypeScript + Fastify                     | Schema-first validation; `fast-check` PBT; same language as the active frontend        |
+| Database              | SQLite via Turso                         | Managed, replicated, edge-optimized; libSQL for household-scale HTTP access            |
+| Authentication        | Self-managed Lucia Auth                  | Full control; SECURITY-12 compliance owned by us                                       |
+| API style             | REST + OpenAPI                           | Typed contracts, client-agnostic, future-native-friendly                               |
+| Web frontend          | Vite + React (SPA)                       | Static SPA; deployed to CDN edge                                                       |
+| Web UI library        | Mantine                                  | Shared theme, polished component library, responsive layout primitives                 |
+| Repo structure        | Monorepo (pnpm workspaces)               | `apps/web`, `apps/api`, `packages/shared`                                              |
+| Hosting — Web         | Cloudflare Pages                         | Static SPA on CDN edge                                                                 |
+| Hosting — API         | PaaS (e.g., Fly.io or Railway)           | Managed TLS, secrets, logging                                                          |
+| Hosting — DB          | Turso (managed)                          | Embedded libSQL, replicated to cloud                                                   |
+| PBT framework         | fast-check                               | TypeScript; integrates with Vitest/Jest; shrinking + seed reproducibility              |
 
 ---
 
-## 5. Open Design Decisions (deferred to Application Design)
+## 5. Open Design Decisions (deferred to later construction work)
 
-- Exact Turso schema design and migration strategy
-- Lucia vs Auth.js final selection and MFA implementation approach
-- OpenFoodFacts API integration caching strategy
-- Monorepo tooling choice (Turborepo vs Nx vs plain pnpm workspaces)
+- Exact Turso schema migration workflow
+- Final password-policy and MFA rollout details for owner accounts
+- OpenFoodFacts API integration caching limits and invalidation details
 - Specific PaaS selection for API hosting
+- Native iOS/Android implementation plan for the deferred mobile phase

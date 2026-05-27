@@ -131,7 +131,7 @@ export const sessions = sqliteTable('sessions', {
   userId: integer('user_id')
     .notNull()
     .references(() => users.id),
-  expiresAt: text('expires_at').notNull(),
+  expiresAt: integer('expires_at').notNull(),
   createdAt: text('created_at')
     .notNull()
     .default(sql`(datetime('now'))`),
