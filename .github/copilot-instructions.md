@@ -4,7 +4,7 @@
 
 - Use the code in `apps/api`, `apps/web`, and `packages/shared` as the source of truth for implemented behavior.
 - Use `aidlc-docs` for product intent, planned units, and AI-DLC context. Some generated AI-DLC files lag the current code, so confirm target modules and wiring in source before changing them.
-- For AI-DLC workflow or artifact-generation tasks, read [`aidlc.instructions.md`](./aidlc.instructions.md) as a companion document.
+- For AI-DLC workflow or artifact-generation tasks, read [`aidlc.instructions.md`](./instructions/aidlc.instructions.md) as a companion document.
 
 ## Workspace shape
 
