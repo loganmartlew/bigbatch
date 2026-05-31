@@ -56,9 +56,10 @@ These are worth fixing as part of the frontend hardening work, but they are not 
 
 **High-level plan**
 
-1. Move active household ownership into a provider (`auth-context` or a dedicated provider).
+1. Create a dedicated `HouseholdProvider` (separate from auth) that owns active household state.
 2. Expose a `switchHousehold` action instead of direct storage calls.
 3. Make network queries depend on that state so switching a household rerenders instead of reloading.
+4. Auth provider should not know about households — keep responsibilities cleanly separated.
 
 ### 3. TanStack Query is installed but not used for actual server state
 
@@ -94,8 +95,8 @@ These are worth fixing as part of the frontend hardening work, but they are not 
 
 **High-level plan**
 
-1. Add `react-hook-form`, `zod`, and `@hookform/resolvers`.
-2. Create shared web form schemas aligned with the API contracts in `packages/shared`.
+1. Add `react-hook-form` and `@hookform/resolvers` (with a TypeBox adapter or custom resolver).
+2. Reuse shared TypeBox schemas from `packages/shared` for frontend form validation — no separate Zod schemas.
 3. Migrate auth/onboarding flows first, then reuse the same patterns for future recipes/ingredients/shopping-list forms.
 
 ### 5. Route files are doing too much and the web structure is not yet feature-oriented
@@ -114,8 +115,9 @@ These are worth fixing as part of the frontend hardening work, but they are not 
 **High-level plan**
 
 1. Keep routes thin and extract form/panel/list components as flows are touched.
-2. Introduce `src/features/auth` and `src/features/household` incrementally instead of moving every file at once.
+2. Implement `src/features/auth` and `src/features/household` **from the start** — do not defer feature folder structure.
 3. Centralize shared UI primitives and domain hooks to improve composability.
+4. All new feature work should begin in a feature folder from day one.
 
 ### 6. Mantine is present, but most auth/household UI still uses raw HTML controls
 
@@ -205,9 +207,9 @@ These are worth fixing as part of the frontend hardening work, but they are not 
 
 ### Phase 3 — forms and structure
 
-1. Add React Hook Form + Zod.
+1. Add React Hook Form + TypeBox-based validation (shared from `packages/shared`).
 2. Migrate auth/onboarding flows to Mantine + structured validation.
-3. Extract reusable auth/household feature components and hooks.
+3. Extract reusable auth/household feature components and hooks into feature folders.
 
 ### Phase 4 — confidence and DX
 
@@ -215,21 +217,25 @@ These are worth fixing as part of the frontend hardening work, but they are not 
 2. Fix the existing lint/test/build baseline for `apps/web`.
 3. Optionally add React Query Devtools for local development.
 
-## Decisions to confirm with the user
+## Decisions (confirmed)
 
-These are the main points that are worth discussing rather than silently locking in:
+1. **Validation source of truth:** TypeBox is already used on the backend for schema validation. The frontend should also use TypeBox so that types and schemas can be shared directly from `packages/shared` without translation. This avoids maintaining parallel Zod schemas and keeps a single source of truth. If TypeBox proves awkward for frontend form validation, a thin adapter layer can convert TypeBox schemas to a form-library-compatible format, but the canonical schemas live in `packages/shared` as TypeBox.
 
-1. **Validation source of truth:** should the web app own Zod schemas directly, or should shared API schemas from `packages/shared` be adapted so validation rules stay aligned in one place?
-2. **Provider ownership:** should active household state live inside `auth-context.tsx`, or should auth and household selection be separate providers to keep responsibilities narrow?
-3. **Structure timing:** should the app move to feature folders now (`features/auth`, `features/household`), or should that be done incrementally as each route is refactored?
-4. **Protected-route strategy:** is a component-level redirect acceptable for now, or do we want a stronger router-level pattern once auth state is bootstrapped at the root?
+2. **Provider ownership:** Auth and household must be **separate providers**. Auth should not care about households beyond what is needed for backend authorisation (e.g., the `X-Household-Id` header). A dedicated `HouseholdProvider` manages active household selection, switching, and household-specific state. This keeps concerns cleanly separated.
+
+3. **Structure timing:** Feature folders (`src/features/auth`, `src/features/household`, etc.) should be implemented **from the start**. Do not defer this — organise new code into feature folders immediately rather than refactoring later.
+
+4. **Protected-route strategy:** Use whatever gives the **best-feeling UX** for the user. This means: no flash of protected content, no jarring redirects, and smooth transitions. Prefer a router-level `beforeLoad` guard (TanStack Router supports this) that checks auth state before rendering, combined with a brief loading/skeleton state while auth is bootstrapping. Avoid blank screens or layout shifts. The goal is a polished, native-feeling experience where unauthenticated users are seamlessly redirected without seeing protected UI.
 
 ## Copilot guidance added in this change
 
 This review is paired with a new scoped instruction file at `.github/instructions/web-frontend.instructions.md` plus updates to `.github/copilot-instructions.md` so future changes nudge the web app toward:
 
-- provider-managed auth and household state
+- provider-managed auth state (separate from household state)
+- a dedicated HouseholdProvider for household selection/switching
 - TanStack Query for server state
-- React Hook Form + Zod for forms
+- React Hook Form + shared TypeBox schemas for forms (no Zod — TypeBox is the single source of truth)
+- feature folders from the start (`src/features/auth`, `src/features/household`, etc.)
 - thinner routes and more reusable components
 - Mantine-based, accessible UI patterns
+- router-level route protection with the best-feeling UX (no content flash, smooth transitions)

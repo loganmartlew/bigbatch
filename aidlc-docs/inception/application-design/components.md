@@ -80,17 +80,44 @@ BigBatch is structured as a **monorepo** (pnpm workspaces + Turborepo) with 3 ac
 
 ## Package: `apps/web` (Vite + React + Mantine SPA)
 
-### Component Group: `pages`
+### Structure: Feature Folders (from the start)
 
-- **Purpose**: Route-level page components
+The web app is organised into feature folders from day one:
+
+```
+src/
+  features/
+    auth/          — auth UI, hooks, queries, form components
+    household/     — household UI, hooks, queries, components
+    recipes/       — recipe UI, hooks, queries, form components
+    ingredients/   — ingredient UI, hooks, queries
+    shopping-list/ — shopping list UI, hooks, queries
+    cook-mode/     — cook mode UI, hooks
+  routes/          — thin route shells composing feature components
+  lib/             — API client, utilities
+  providers/       — AuthProvider, HouseholdProvider (separate concerns)
+  ui/              — shared presentational components
+  theme.ts         — Mantine theme
+```
+
+### Providers
+
+- **AuthProvider** — authentication state only (current user, login/logout, isAuthenticated). Does NOT know about households.
+- **HouseholdProvider** — active household selection, switching, household-specific state. Fully separate from auth. Auth only provides user identity; household management is its own concern.
+
+### Component Group: `routes`
+
+- **Purpose**: Thin route-level shells that compose feature components
 - **Key Pages**: Login, Register, Onboarding (create/join household), Recipes List, Recipe Detail, Recipe Editor, Ingredient Library, Shopping List, Cook Mode, Household Settings, Household Switcher
+- **Route protection**: TanStack Router `beforeLoad` guards ensure best-feeling UX — no flash of protected content, smooth transitions, skeleton states while auth bootstraps
 - **Notes**: Page shells should use Mantine layout primitives and shared section patterns for a consistent, polished UI
 
 ### Component Group: `features`
 
-- **Purpose**: Feature-specific UI components and hooks
-- **Subgroups**: `recipes`, `ingredients`, `shopping-list`, `cook-mode`, `cook-history`, `auth`, `household`
+- **Purpose**: Feature-specific UI components, hooks, queries, and form logic
+- **Subgroups**: `auth`, `household`, `recipes`, `ingredients`, `shopping-list`, `cook-mode`
 - **Responsibilities**: Feature-specific forms, lists, cards, drawers/modals, and TanStack Query hooks for API calls
+- **Validation**: Uses shared TypeBox schemas from `packages/shared` — no separate Zod schemas
 
 ### Component Group: `ui`
 
@@ -124,9 +151,9 @@ BigBatch is structured as a **monorepo** (pnpm workspaces + Turborepo) with 3 ac
 
 ### Module: `schemas`
 
-- **Purpose**: Runtime validation schemas (TypeBox or Zod-compatible shapes) matching the type definitions
+- **Purpose**: Runtime validation schemas (TypeBox) matching the type definitions — shared across the full stack
 - **Exports**: `CreateRecipeSchema`, `UpdateRecipeSchema`, `CreateIngredientSchema`, `ScaleRecipeSchema`, etc.
-- **Used by**: API (request validation), web (form validation), and future client code via the API contract
+- **Used by**: API (request validation) and web (form validation via React Hook Form + TypeBox resolver) — single source of truth, no Zod duplication
 
 ### Module: `nutrition`
 
