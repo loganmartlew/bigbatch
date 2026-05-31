@@ -22,7 +22,7 @@ Use these rules whenever you change the React web app.
 
 ## Forms and validation
 
-- For new forms, use React Hook Form with Zod validation.
+- For new forms, use React Hook Form with shared TypeBox schemas from `packages/shared` for validation.
 - When an API contract already exists in `packages/shared`, keep the web validation aligned with that contract instead of duplicating unrelated rules.
 - Surface field-level validation inline and keep submit buttons disabled while invalid or submitting.
 - If you touch an existing route-local form, prefer extracting a reusable form component instead of adding more local `useState` fields.
