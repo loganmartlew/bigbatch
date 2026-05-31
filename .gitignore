@@ -20,6 +20,3 @@ Thumbs.db
 
 # Test
 coverage/
-
-# Drizzle
-apps/api/drizzle/

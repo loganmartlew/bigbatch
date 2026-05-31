@@ -14,29 +14,27 @@ import {
   executePasswordReset,
 } from './auth.service.js';
 import { lucia } from '../../lib/lucia.js';
-import { env } from '../../lib/env.js';
+import { AuthenticationError } from '../core/errors.js';
 
 function setSessionCookie(
   reply: import('fastify').FastifyReply,
   sessionId: string,
 ) {
-  reply.setCookie('session', sessionId, {
-    httpOnly: true,
-    secure: env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
-    maxAge: 60 * 60 * 24 * 30, // 30 days
-  });
+  const sessionCookie = lucia.createSessionCookie(sessionId);
+  reply.setCookie(
+    sessionCookie.name,
+    sessionCookie.value,
+    sessionCookie.attributes,
+  );
 }
 
 function clearSessionCookie(reply: import('fastify').FastifyReply) {
-  reply.setCookie('session', '', {
-    httpOnly: true,
-    secure: env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
-    maxAge: 0,
-  });
+  const blankSessionCookie = lucia.createBlankSessionCookie();
+  reply.setCookie(
+    blankSessionCookie.name,
+    blankSessionCookie.value,
+    blankSessionCookie.attributes,
+  );
 }
 
 export async function registerAuthRoutes(server: FastifyInstance) {
@@ -93,13 +91,23 @@ export async function registerAuthRoutes(server: FastifyInstance) {
   );
 
   server.post('/auth/logout', async (request, reply) => {
-    await logoutUser(request.sessionId);
+    const sessionId = request.sessionId;
+    if (!sessionId) {
+      throw new AuthenticationError();
+    }
+
+    await logoutUser(sessionId);
     clearSessionCookie(reply);
     return reply.status(204).send();
   });
 
   server.get('/auth/me', async (request, reply) => {
-    const result = await getCurrentUser(request.user.id);
+    const user = request.user;
+    if (!user) {
+      throw new AuthenticationError();
+    }
+
+    const result = await getCurrentUser(user.id);
     return reply.send({ data: result });
   });
 

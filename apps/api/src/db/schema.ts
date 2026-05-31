@@ -3,6 +3,7 @@ import {
   text,
   integer,
   real,
+  primaryKey,
   uniqueIndex,
   index,
 } from 'drizzle-orm/sqlite-core';
@@ -77,7 +78,7 @@ export const userHouseholds = sqliteTable(
       .default(sql`(datetime('now'))`),
   },
   table => [
-    uniqueIndex('user_households_pk').on(table.userId, table.householdId),
+    primaryKey({ columns: [table.userId, table.householdId] }),
     index('user_households_household_idx').on(table.householdId),
   ],
 );

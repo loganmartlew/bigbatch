@@ -1,62 +1,33 @@
+import { Center, Loader } from '@mantine/core';
 import { createFileRoute } from '@tanstack/react-router';
-import { useState } from 'react';
-import { api } from '../lib/api-client';
+import { ForgotPasswordForm } from '../features/auth/components/forgot-password-form';
+import { AuthShell } from '../features/auth/components/auth-shell';
+import { redirectAuthenticatedUser } from '../features/auth/utils/route-guards';
+import { useAuth } from '../lib/auth-context';
 
 export const Route = createFileRoute('/forgot-password')({
+  beforeLoad: ({ context }) => {
+    redirectAuthenticatedUser(context);
+  },
   component: ForgotPasswordPage,
 });
 
 function ForgotPasswordPage() {
-  const [email, setEmail] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const auth = useAuth();
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      await api.post('/auth/forgot-password', { email });
-    } catch {
-      // Ignore — always show success to prevent enumeration
-    }
-    setSubmitted(true);
-    setLoading(false);
-  }
-
-  if (submitted) {
+  if (auth.isLoading) {
     return (
-      <div>
-        <h2>Check Your Email</h2>
-        <p>
-          If an account with that email exists, a password reset link has been
-          sent.
-        </p>
-        <a href='/login'>Back to login</a>
-      </div>
+      <AuthShell
+        badge='Session'
+        description='Checking whether you already have an active session.'
+        title='Loading your account'
+      >
+        <Center py='xl'>
+          <Loader color='orange' />
+        </Center>
+      </AuthShell>
     );
   }
 
-  return (
-    <div>
-      <h2>Forgot Password</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor='email'>Email</label>
-          <input
-            id='email'
-            type='email'
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <button type='submit' disabled={loading}>
-          {loading ? 'Sending…' : 'Send Reset Link'}
-        </button>
-      </form>
-      <p>
-        <a href='/login'>Back to login</a>
-      </p>
-    </div>
-  );
+  return <ForgotPasswordForm />;
 }
