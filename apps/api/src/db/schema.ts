@@ -157,10 +157,10 @@ export const ingredients = sqliteTable(
       .references(() => households.id),
     name: text('name').notNull(),
     defaultUnit: text('default_unit').notNull(),
-    calories: real('calories').notNull(),
-    protein: real('protein').notNull(),
-    carbs: real('carbs').notNull(),
-    fat: real('fat').notNull(),
+    calories: real('calories'),
+    protein: real('protein'),
+    carbs: real('carbs'),
+    fat: real('fat'),
     categoryId: integer('category_id').references(() => shoppingCategories.id),
     createdAt: text('created_at')
       .notNull()

@@ -82,6 +82,14 @@ function RootLayout() {
                 {auth.households.length > 0 ? <HouseholdSelector /> : null}
                 {auth.households.length > 0 ? (
                   <Button
+                    onClick={() => navigate({ to: '/ingredients' })}
+                    variant='default'
+                  >
+                    Ingredients
+                  </Button>
+                ) : null}
+                {auth.households.length > 0 ? (
+                  <Button
                     onClick={() => navigate({ to: '/settings/household' })}
                     variant='default'
                   >

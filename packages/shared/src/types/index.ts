@@ -57,10 +57,10 @@ export interface Ingredient {
   householdId: number;
   name: string;
   defaultUnit: Unit;
-  calories: number;
-  protein: number;
-  carbs: number;
-  fat: number;
+  calories: number | null;
+  protein: number | null;
+  carbs: number | null;
+  fat: number | null;
   categoryId: number | null;
   createdAt: string;
   updatedAt: string;

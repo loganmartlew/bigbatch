@@ -16,7 +16,10 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as IngredientsIndexRouteImport } from './routes/ingredients/index'
 import { Route as SettingsHouseholdRouteImport } from './routes/settings/household'
+import { Route as IngredientsNewRouteImport } from './routes/ingredients/new'
+import { Route as IngredientsIngredientIdEditRouteImport } from './routes/ingredients/$ingredientId.edit'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -53,11 +56,27 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const IngredientsIndexRoute = IngredientsIndexRouteImport.update({
+  id: '/ingredients/',
+  path: '/ingredients/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsHouseholdRoute = SettingsHouseholdRouteImport.update({
   id: '/settings/household',
   path: '/settings/household',
   getParentRoute: () => rootRouteImport,
 } as any)
+const IngredientsNewRoute = IngredientsNewRouteImport.update({
+  id: '/ingredients/new',
+  path: '/ingredients/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IngredientsIngredientIdEditRoute =
+  IngredientsIngredientIdEditRouteImport.update({
+    id: '/ingredients/$ingredientId/edit',
+    path: '/ingredients/$ingredientId/edit',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -67,7 +86,10 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/ingredients/new': typeof IngredientsNewRoute
   '/settings/household': typeof SettingsHouseholdRoute
+  '/ingredients/': typeof IngredientsIndexRoute
+  '/ingredients/$ingredientId/edit': typeof IngredientsIngredientIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -77,7 +99,10 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/ingredients/new': typeof IngredientsNewRoute
   '/settings/household': typeof SettingsHouseholdRoute
+  '/ingredients': typeof IngredientsIndexRoute
+  '/ingredients/$ingredientId/edit': typeof IngredientsIngredientIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -88,7 +113,10 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/ingredients/new': typeof IngredientsNewRoute
   '/settings/household': typeof SettingsHouseholdRoute
+  '/ingredients/': typeof IngredientsIndexRoute
+  '/ingredients/$ingredientId/edit': typeof IngredientsIngredientIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -100,7 +128,10 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/register'
     | '/reset-password'
+    | '/ingredients/new'
     | '/settings/household'
+    | '/ingredients/'
+    | '/ingredients/$ingredientId/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -110,7 +141,10 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/register'
     | '/reset-password'
+    | '/ingredients/new'
     | '/settings/household'
+    | '/ingredients'
+    | '/ingredients/$ingredientId/edit'
   id:
     | '__root__'
     | '/'
@@ -120,7 +154,10 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/register'
     | '/reset-password'
+    | '/ingredients/new'
     | '/settings/household'
+    | '/ingredients/'
+    | '/ingredients/$ingredientId/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -131,7 +168,10 @@ export interface RootRouteChildren {
   OnboardingRoute: typeof OnboardingRoute
   RegisterRoute: typeof RegisterRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  IngredientsNewRoute: typeof IngredientsNewRoute
   SettingsHouseholdRoute: typeof SettingsHouseholdRoute
+  IngredientsIndexRoute: typeof IngredientsIndexRoute
+  IngredientsIngredientIdEditRoute: typeof IngredientsIngredientIdEditRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -185,11 +225,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ingredients/': {
+      id: '/ingredients/'
+      path: '/ingredients'
+      fullPath: '/ingredients/'
+      preLoaderRoute: typeof IngredientsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings/household': {
       id: '/settings/household'
       path: '/settings/household'
       fullPath: '/settings/household'
       preLoaderRoute: typeof SettingsHouseholdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ingredients/new': {
+      id: '/ingredients/new'
+      path: '/ingredients/new'
+      fullPath: '/ingredients/new'
+      preLoaderRoute: typeof IngredientsNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ingredients/$ingredientId/edit': {
+      id: '/ingredients/$ingredientId/edit'
+      path: '/ingredients/$ingredientId/edit'
+      fullPath: '/ingredients/$ingredientId/edit'
+      preLoaderRoute: typeof IngredientsIngredientIdEditRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -203,7 +264,10 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingRoute: OnboardingRoute,
   RegisterRoute: RegisterRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  IngredientsNewRoute: IngredientsNewRoute,
   SettingsHouseholdRoute: SettingsHouseholdRoute,
+  IngredientsIndexRoute: IngredientsIndexRoute,
+  IngredientsIngredientIdEditRoute: IngredientsIngredientIdEditRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

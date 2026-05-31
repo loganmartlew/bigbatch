@@ -6,6 +6,7 @@ import rateLimit from '@fastify/rate-limit';
 import { env } from './lib/env.js';
 import { corePlugin } from './modules/core/index.js';
 import { authPlugin } from './modules/auth/index.js';
+import { ingredientsPlugin } from './modules/ingredients/index.js';
 
 const server = Fastify({
   logger: {
@@ -27,10 +28,10 @@ await server.register(rateLimit, {
 });
 await server.register(corePlugin);
 await server.register(authPlugin);
+await server.register(ingredientsPlugin);
 
 // Domain module plugins registered here in later units:
 // await server.register(recipesPlugin, { prefix: "/recipes" });
-// await server.register(ingredientsPlugin, { prefix: "/ingredients" });
 // await server.register(shoppingListPlugin, { prefix: "/shopping-list" });
 
 server.get('/health', async () => ({ status: 'ok' }));
