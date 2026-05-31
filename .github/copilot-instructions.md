@@ -4,12 +4,20 @@
 
 - Use the code in `apps/api`, `apps/web`, and `packages/shared` as the source of truth for implemented behavior.
 - Use `aidlc-docs` for product intent, planned units, and AI-DLC context. Some generated AI-DLC files lag the current code, so confirm target modules and wiring in source before changing them.
-- For AI-DLC workflow or artifact-generation tasks, read [`aidlc.instructions.md`](./aidlc.instructions.md) as a companion document.
+- For AI-DLC workflow or artifact-generation tasks, prefer the explicit `aidlc-workflow` agent or the prompts under `.github/prompts/` instead of applying AI-DLC to every coding request. Use [`aidlc.instructions.md`](./instructions/aidlc.instructions.md) as the companion document once you are inside that workflow.
 
 ## Workspace shape
 
 - Active workspace packages are `apps/api`, `apps/web`, and `packages/shared`.
 - Use `pnpm` for workspace commands and prefer filtered commands when you only need one package.
+- Follow the scoped instructions under `.github/instructions/` when touching API modules, shared contracts, database code, tests, AI-DLC docs, or workspace configuration.
+
+## AI workflow entrypoints
+
+- Use `.github/agents/aidlc-workflow.agent.md` for staged AI-DLC work.
+- Use `.github/agents/repo-review.agent.md` and `.github/prompts/review-slice.prompt.md` for review-heavy tasks.
+- Use `.github/prompts/new-domain-unit.prompt.md` for shared-first feature slice implementation.
+- Use `../.agents/SKILL-REGISTRY.md` to discover repo-local skills before inventing a new workflow from scratch.
 
 ## Current product scope
 
@@ -51,7 +59,10 @@
 
 ## Useful docs
 
-- Workflow companion: [`aidlc.instructions.md`](./aidlc.instructions.md)
+- Workflow companion: [`aidlc.instructions.md`](./instructions/aidlc.instructions.md)
+- Workflow entrypoints: [`aidlc-workflow.agent.md`](./agents/aidlc-workflow.agent.md), [`aidlc-kickoff.prompt.md`](./prompts/aidlc-kickoff.prompt.md), [`aidlc-sync-state.prompt.md`](./prompts/aidlc-sync-state.prompt.md)
+- Review and implementation entrypoints: [`repo-review.agent.md`](./agents/repo-review.agent.md), [`review-slice.prompt.md`](./prompts/review-slice.prompt.md), [`new-domain-unit.prompt.md`](./prompts/new-domain-unit.prompt.md)
+- Skill registry: [`../.agents/SKILL-REGISTRY.md`](../.agents/SKILL-REGISTRY.md)
 - Product and application direction: [`../aidlc-docs/inception/application-design/application-design.md`](../aidlc-docs/inception/application-design/application-design.md)
 - Requirements and stack decisions: [`../aidlc-docs/inception/requirements/requirements.md`](../aidlc-docs/inception/requirements/requirements.md), [`../aidlc-docs/inception/requirements/tech-stack-decisions.md`](../aidlc-docs/inception/requirements/tech-stack-decisions.md)
 - AI-DLC state and generated summaries: [`../aidlc-docs/aidlc-state.md`](../aidlc-docs/aidlc-state.md), [`../aidlc-docs/construction/auth-household/code/code-generation-summary.md`](../aidlc-docs/construction/auth-household/code/code-generation-summary.md)
