@@ -86,7 +86,7 @@ These are worth fixing as part of the frontend hardening work, but they are not 
 
 - Auth, onboarding, and reset flows use bare HTML controls and route-local `useState`.
 - Validation is mostly browser-native (`required`, `minLength`, `maxLength`) plus generic error messages.
-- `react-hook-form`, `zod`, and `@hookform/resolvers` are not currently installed in `apps/web`.
+- `react-hook-form` and `@hookform/resolvers` are not currently installed in `apps/web`.
 
 **Why this matters**
 
