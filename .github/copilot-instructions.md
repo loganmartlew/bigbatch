@@ -37,8 +37,10 @@
 
 - Use TanStack Router file-based routes under `src/routes`, Mantine components for UI, and TanStack Query for server state.
 - Use `src/lib/api-client.ts` for API requests so cookies and `X-Household-Id` handling stay consistent.
-- The active household is client-side state in `src/lib/household-context.ts`; do not introduce a server-side `activeHouseholdId` unless the design changes.
-- Auth and household helpers exist, but the current web entrypoint/root layout does not yet wire the app through `AuthProvider`. Treat auth-related route files as partially integrated scaffolding and check the entrypoint before extending that flow.
+- Treat `src/lib/auth-context.tsx` as the long-term home for auth and active-household client state; prefer provider-managed state over route-local `localStorage` helpers when touching that flow.
+- New or touched forms should move toward React Hook Form + shared TypeBox schemas (from `packages/shared`) instead of route-local `useState` + manual validation.
+- New or touched server-state flows should move toward TanStack Query hooks instead of calling `api.*` directly inside route components.
+- Follow the scoped guidance in `.github/instructions/mantine.instructions.md` and `.github/instructions/web-frontend.instructions.md` when editing the web app.
 - Keep web-only state, routing, and UI in `apps/web`; do not push browser-specific logic into `packages/shared`.
 
 ## Data and testing

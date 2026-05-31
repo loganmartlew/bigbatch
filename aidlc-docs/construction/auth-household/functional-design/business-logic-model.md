@@ -173,6 +173,29 @@ modules/auth/
 
 ### Web (`apps/web`)
 
+**Feature folder structure** (implemented from the start):
+
+```
+src/
+  features/
+    auth/          — auth pages, hooks, components, queries
+    household/     — household pages, hooks, components, queries
+  routes/          — thin route shells that compose feature components
+  lib/             — API client, utilities
+  theme.ts         — Mantine theme
+```
+
+**Providers** (separate concerns):
+
+- `AuthProvider` — manages authentication state (current user, login/logout, isAuthenticated). Does NOT know about households.
+- `HouseholdProvider` — manages active household selection, switching, and household-specific state. Separate from auth.
+
+**Route protection** (best-feeling UX):
+
+- TanStack Router `beforeLoad` guards check auth state before rendering protected routes.
+- Unauthenticated users are redirected seamlessly without seeing protected content.
+- A skeleton/loading state is shown while auth is bootstrapping — no blank screens or layout shifts.
+
 **Auth Pages** (unauthenticated routes):
 
 - `/login` — LoginPage: email + password form, link to register, link to forgot password
