@@ -2,10 +2,10 @@
 
 ## Sync Note
 
-- Synced against the current source tree on 2026-05-31.
+- Synced against the current source tree on 2026-06-01.
 - This summary reflects the active workspace only: `apps/api`, `apps/web`, and `packages/shared`.
 - No active `apps/mobile` package exists in the workspace; future native mobile remains deferred.
-- Approval state: Unit 1 code is present in source, but post-generation user approval is not yet recorded in `aidlc-docs/audit.md`.
+- Approval state: Unit 1 remains approved in `aidlc-docs/aidlc-state.md`; later units now extend the active workspace beyond the original Unit 1 scope.
 
 ## Overview
 
@@ -97,4 +97,5 @@ Unit 1 implements user authentication (registration, login, logout, password res
 
 - Active implementation is limited to `apps/api`, `apps/web`, and `packages/shared`.
 - Household selection remains client-side on the web and is sent to the API via `X-Household-Id`.
-- Ingredients, recipes, shopping, and cook-event UI/API flows are still future units.
+- Ingredients and recipes were implemented in later units; shopping and cook-event UI/API flows remain future units.
+

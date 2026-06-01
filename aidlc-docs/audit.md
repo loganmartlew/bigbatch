@@ -287,3 +287,21 @@
 **Context**: Sync-state reconciliation. Security and property-based-testing enforcement remain enabled; no new blocking findings were introduced by this documentation pass.
 
 ---
+
+## AI-DLC Sync State — Request Logged
+
+**Timestamp**: 2026-06-01T00:00:00Z
+**User Input**: "/AIDLC-Sync-State"
+**AI Response**: Started a new documentation-only reconciliation pass after direct implementation and UX bug-fix work moved ahead of the tracking artifacts. Loaded the AI-DLC companion, common rules, enabled extension opt-ins, current state files, and the active source tree under `apps/api`, `apps/web`, and `packages/shared`.
+**Context**: Sync-state workflow entry point.
+
+---
+
+## AI-DLC Sync State — Reconciled Ingredients/Recipes Snapshot
+
+**Timestamp**: 2026-06-01T00:10:00Z
+**User Input**: (none)
+**AI Response**: Verified current source reality: Unit 2 Ingredients is implemented and approved; Unit 3 Recipes is implemented across shared contracts, API routes/services/tests, and web list/detail/edit/cook flows; post-implementation recipe UX improvements are present in source, including inline ingredient creation from the recipe form, drag-and-drop instruction ordering, Mantine delete confirmation, visible duplicate/delete mutation errors, and the no-body duplicate-request fix in the shared web API client. Added the missing Unit 3 recipes code-generation summary, updated `aidlc-state.md` to mark Unit 3 approved, updated the stale Unit 1 auth/household summary scope note, and reconciled the recipes code-generation plan so it no longer reads as unexecuted. Shopping and cook-event units remain unimplemented.
+**Context**: Sync-state reconciliation. Security Baseline and Property-Based Testing remain enabled. No approval-gated stage was advanced beyond the now-implemented-and-session-approved Unit 3 snapshot.
+
+---

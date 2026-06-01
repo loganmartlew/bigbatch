@@ -1,5 +1,12 @@
 # Unit 3: Recipes — Code Generation Plan
 
+## Sync Note
+
+- Synced against the active source tree on 2026-06-01.
+- The recipe unit has been implemented. The authoritative implementation snapshot now lives in `aidlc-docs/construction/recipes/code/code-generation-summary.md`.
+- Final web execution used a layout route split (`$recipeId.tsx` + `$recipeId.index.tsx`) and later UX follow-up work added inline ingredient creation, sortable steps, Mantine delete confirmation, duplicate/delete error states, and a shared recipe form.
+- API validation coverage landed as route tests plus property-based tests rather than a dedicated `recipes.service.test.ts` file.
+
 ## Pre-conditions
 
 - Unit 2 (Ingredients) is implemented and approved
@@ -11,22 +18,22 @@
 
 ## Steps
 
-- [ ] **Step 1**: Schema migration — add `source`, `prepTime`, `cookTime` to recipes table; create `recipe_tags` and `recipe_tag_assignments` tables with relations
-- [ ] **Step 2**: Shared types update — add `RecipeTag`, update `Recipe` type with new fields; add `RecipeDetail`, `RecipeSummary` response types
-- [ ] **Step 3**: Shared schemas — create `packages/shared/src/schemas/recipe.ts` with CreateRecipeSchema, UpdateRecipeSchema, RecipeSchema, RecipeSummarySchema, TagSchema
-- [ ] **Step 4**: Shared nutrition utilities — create `packages/shared/src/nutrition.ts` with `computeIngredientNutrition`, `computeRecipeNutrition`, `computePerServing`
-- [ ] **Step 5**: Shared scaling utilities — create `packages/shared/src/scaling.ts` with `scaleQuantity`, `scaleIngredients`
-- [ ] **Step 6**: Recipes service — create `apps/api/src/modules/recipes/recipes.service.ts` with createRecipe, listRecipes, getRecipe, updateRecipe, deleteRecipe, duplicateRecipe, listTags
-- [ ] **Step 7**: Recipes routes — create `apps/api/src/modules/recipes/recipes.routes.ts` with all endpoint handlers
-- [ ] **Step 8**: Recipes plugin registration — create `apps/api/src/modules/recipes/index.ts` and register in main server
-- [ ] **Step 9**: API unit tests — `recipes.service.test.ts` + PBT tests for nutrition/scaling
-- [ ] **Step 10**: Web API hooks — create `apps/web/src/features/recipes/api.ts` with TanStack Query hooks
-- [ ] **Step 11**: Recipes list page — `apps/web/src/routes/recipes/index.tsx` with search, tag filter, recipe cards
-- [ ] **Step 12**: Recipe detail page — `apps/web/src/routes/recipes/$recipeId.tsx` with full detail, nutrition, scaling UI
-- [ ] **Step 13**: Recipe create/edit pages — `apps/web/src/routes/recipes/new.tsx` and `$recipeId.edit.tsx` with dynamic ingredient/step forms
-- [ ] **Step 14**: Cook mode — `apps/web/src/routes/recipes/$recipeId.cook.tsx` with step-by-step, wake-lock, progress
-- [ ] **Step 15**: Route wiring & nav — regenerate route tree, add Recipes nav link
-- [ ] **Step 16**: Typecheck, test, documentation summary
+- [x] **Step 1**: Schema migration — add `source`, `prepTime`, `cookTime` to recipes table; create `recipe_tags` and `recipe_tag_assignments` tables with relations
+- [x] **Step 2**: Shared types update — add `RecipeTag`, update `Recipe` type with new fields; add `RecipeDetail`, `RecipeSummary` response types
+- [x] **Step 3**: Shared schemas — create `packages/shared/src/schemas/recipe.ts` with CreateRecipeSchema, UpdateRecipeSchema, RecipeSchema, RecipeSummarySchema, TagSchema
+- [x] **Step 4**: Shared nutrition utilities — create `packages/shared/src/nutrition.ts` with `computeIngredientNutrition`, `computeRecipeNutrition`, `computePerServing`
+- [x] **Step 5**: Shared scaling utilities — create `packages/shared/src/scaling.ts` with `scaleQuantity`, `scaleIngredients`
+- [x] **Step 6**: Recipes service — create `apps/api/src/modules/recipes/recipes.service.ts` with createRecipe, listRecipes, getRecipe, updateRecipe, deleteRecipe, duplicateRecipe, listTags
+- [x] **Step 7**: Recipes routes — create `apps/api/src/modules/recipes/recipes.routes.ts` with all endpoint handlers
+- [x] **Step 8**: Recipes plugin registration — create `apps/api/src/modules/recipes/index.ts` and register in main server
+- [x] **Step 9**: API tests — route coverage plus PBT tests for nutrition/scaling
+- [x] **Step 10**: Web API hooks — create `apps/web/src/features/recipes/api.ts` with TanStack Query hooks
+- [x] **Step 11**: Recipes list page — `apps/web/src/routes/recipes/index.tsx` with search, tag filter, recipe cards
+- [x] **Step 12**: Recipe detail page — implemented as a layout split across `apps/web/src/routes/recipes/$recipeId.tsx` and `apps/web/src/routes/recipes/$recipeId.index.tsx`
+- [x] **Step 13**: Recipe create/edit pages — shared form wiring in `apps/web/src/routes/recipes/new.tsx` and `apps/web/src/routes/recipes/$recipeId.edit.tsx`
+- [x] **Step 14**: Cook mode — `apps/web/src/routes/recipes/$recipeId.cook.tsx` with step-by-step flow and wake-lock handling
+- [x] **Step 15**: Route wiring & nav — regenerate route tree, add Recipes nav link
+- [x] **Step 16**: Typecheck, test, documentation summary
 
 ---
 
