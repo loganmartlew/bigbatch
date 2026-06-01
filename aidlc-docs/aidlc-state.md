@@ -5,7 +5,7 @@
 - **Project Name**: BigBatch
 - **Project Type**: Greenfield origin
 - **Start Date**: 2026-05-13T00:00:00Z
-- **Current Stage**: CONSTRUCTION - Unit 3: Recipes (Code Generation Planning)
+- **Current Stage**: CONSTRUCTION - Unit 3: Recipes (Code Generation Complete)
 
 ## Workspace State
 
@@ -26,7 +26,7 @@
 - **Unit 0: Foundation**: Implemented across the active monorepo root, `apps/api`, `apps/web`, and `packages/shared`
 - **Unit 1: Auth & Household**: Code is present in API routes/services/tests, shared auth and household schemas, and web auth/onboarding/settings flows
 - **Mobile**: No active `apps/mobile` package exists in the workspace; future native mobile remains deferred
-- **Units 2–5**: Ingredients module fully implemented (API + web + tests). Recipes, shopping, and cook-event modules are not implemented yet.
+- **Units 2–5**: Ingredients and Recipes modules fully implemented (API + web + tests). Shopping and cook-event modules are not implemented yet.
 
 ## Stage Progress
 
@@ -45,7 +45,7 @@
 - [x] Unit 0: Foundation
 - [x] Unit 1: Auth & Household (APPROVED)
 - [x] Unit 2: Ingredients (APPROVED)
-- [ ] Unit 3: Recipes
+- [x] Unit 3: Recipes (Code Generation Complete — awaiting approval)
 - [ ] Unit 4: Shopping
 - [ ] Unit 5: Cook Events
 - [ ] Build and Test

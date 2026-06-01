@@ -15,6 +15,13 @@
       "when": 1780222548005,
       "tag": "0001_keen_romulus",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1780225222060,
+      "tag": "0002_kind_thundra",
+      "breakpoints": true
     }
   ]
 }

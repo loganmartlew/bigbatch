@@ -202,6 +202,9 @@ export const recipes = sqliteTable(
       .references(() => households.id),
     name: text('name').notNull(),
     description: text('description'),
+    source: text('source'),
+    prepTime: integer('prep_time'),
+    cookTime: integer('cook_time'),
     batchSize: integer('batch_size').notNull(),
     createdBy: integer('created_by')
       .notNull()
@@ -234,6 +237,7 @@ export const recipesRelations = relations(recipes, ({ one, many }) => ({
   }),
   instructions: many(recipeInstructions),
   ingredients: many(recipeIngredients),
+  tagAssignments: many(recipeTagAssignments),
   cookEvents: many(cookEvents),
 }));
 
@@ -299,6 +303,66 @@ export const recipeIngredientsRelations = relations(
     ingredient: one(ingredients, {
       fields: [recipeIngredients.ingredientId],
       references: [ingredients.id],
+    }),
+  }),
+);
+
+// ─── Recipe Tags ─────────────────────────────────────────────
+
+export const recipeTags = sqliteTable(
+  'recipe_tags',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    householdId: integer('household_id')
+      .notNull()
+      .references(() => households.id),
+    name: text('name').notNull(),
+  },
+  table => [
+    uniqueIndex('recipe_tags_household_name_idx').on(
+      table.householdId,
+      table.name,
+    ),
+    index('recipe_tags_household_idx').on(table.householdId),
+  ],
+);
+
+export const recipeTagsRelations = relations(recipeTags, ({ one, many }) => ({
+  household: one(households, {
+    fields: [recipeTags.householdId],
+    references: [households.id],
+  }),
+  assignments: many(recipeTagAssignments),
+}));
+
+// ─── Recipe Tag Assignments ──────────────────────────────────
+
+export const recipeTagAssignments = sqliteTable(
+  'recipe_tag_assignments',
+  {
+    recipeId: integer('recipe_id')
+      .notNull()
+      .references(() => recipes.id, { onDelete: 'cascade' }),
+    tagId: integer('tag_id')
+      .notNull()
+      .references(() => recipeTags.id, { onDelete: 'cascade' }),
+  },
+  table => [
+    primaryKey({ columns: [table.recipeId, table.tagId] }),
+    index('recipe_tag_assignments_tag_idx').on(table.tagId),
+  ],
+);
+
+export const recipeTagAssignmentsRelations = relations(
+  recipeTagAssignments,
+  ({ one }) => ({
+    recipe: one(recipes, {
+      fields: [recipeTagAssignments.recipeId],
+      references: [recipes.id],
+    }),
+    tag: one(recipeTags, {
+      fields: [recipeTagAssignments.tagId],
+      references: [recipeTags.id],
     }),
   }),
 );

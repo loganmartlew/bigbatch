@@ -23,20 +23,23 @@ async function request<T>(
   body?: unknown,
   options?: ApiRequestOptions,
 ): Promise<T> {
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-  };
+  const headers: Record<string, string> = {};
 
   const householdId = options?.householdId;
   if (householdId) {
     headers['X-Household-Id'] = String(householdId);
   }
 
+  const hasBody = body !== undefined;
+  if (hasBody) {
+    headers['Content-Type'] = 'application/json';
+  }
+
   const response = await fetch(`${API_BASE}${path}`, {
     method,
     headers,
     credentials: 'include',
-    body: body ? JSON.stringify(body) : undefined,
+    body: hasBody ? JSON.stringify(body) : undefined,
   });
 
   if (!response.ok) {
