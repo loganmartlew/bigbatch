@@ -57,10 +57,10 @@ export interface Ingredient {
   householdId: number;
   name: string;
   defaultUnit: Unit;
-  calories: number;
-  protein: number;
-  carbs: number;
-  fat: number;
+  calories: number | null;
+  protein: number | null;
+  carbs: number | null;
+  fat: number | null;
   categoryId: number | null;
   createdAt: string;
   updatedAt: string;
@@ -83,6 +83,9 @@ export interface Recipe {
   householdId: number;
   name: string;
   description: string | null;
+  source: string | null;
+  prepTime: number | null;
+  cookTime: number | null;
   batchSize: number;
   createdBy: number;
   createdAt: string;
@@ -103,6 +106,60 @@ export interface RecipeInstruction {
   recipeId: number;
   stepNumber: number;
   text: string;
+}
+
+// ─── Recipe Tags ─────────────────────────────────────────────
+
+export interface RecipeTag {
+  id: number;
+  householdId: number;
+  name: string;
+}
+
+export interface TagWithCount {
+  id: number;
+  name: string;
+  recipeCount: number;
+}
+
+// ─── Recipe Response Shapes ──────────────────────────────────
+
+export interface RecipeIngredientDetail {
+  id: number;
+  ingredientId: number;
+  ingredientName: string;
+  quantity: number;
+  unit: Unit;
+  nutrition: NutritionInfo | null;
+}
+
+export interface RecipeDetail {
+  id: number;
+  householdId: number;
+  name: string;
+  description: string | null;
+  source: string | null;
+  prepTime: number | null;
+  cookTime: number | null;
+  batchSize: number;
+  createdBy: number;
+  instructions: RecipeInstruction[];
+  ingredients: RecipeIngredientDetail[];
+  tags: string[];
+  nutrition: NutritionInfo | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface RecipeSummary {
+  id: number;
+  name: string;
+  description: string | null;
+  prepTime: number | null;
+  cookTime: number | null;
+  batchSize: number;
+  tags: string[];
+  createdAt: string;
 }
 
 // ─── Nutrition ───────────────────────────────────────────────

@@ -16,11 +16,20 @@ import {
 import { eq, and } from 'drizzle-orm';
 import { db } from '../../db/client.js';
 import { userHouseholds } from '../../db/schema.js';
-import { ForbiddenError } from '../core/errors.js';
+import { AuthenticationError, ForbiddenError } from '../core/errors.js';
+
+function getAuthenticatedUser(request: import('fastify').FastifyRequest) {
+  if (!request.user) {
+    throw new AuthenticationError();
+  }
+
+  return request.user;
+}
 
 export async function registerHouseholdRoutes(server: FastifyInstance) {
   server.get('/households', async (request, reply) => {
-    const result = await listUserHouseholds(request.user.id);
+    const user = getAuthenticatedUser(request);
+    const result = await listUserHouseholds(user.id);
     return reply.send({ data: { households: result } });
   });
 
@@ -30,8 +39,9 @@ export async function registerHouseholdRoutes(server: FastifyInstance) {
       schema: { body: CreateHouseholdSchema },
     },
     async (request, reply) => {
+      const user = getAuthenticatedUser(request);
       const { name } = request.body as { name: string };
-      const household = await createHousehold(request.user.id, name);
+      const household = await createHousehold(user.id, name);
       return reply.status(201).send({ data: { household } });
     },
   );
@@ -42,8 +52,9 @@ export async function registerHouseholdRoutes(server: FastifyInstance) {
       schema: { body: JoinByLinkSchema },
     },
     async (request, reply) => {
+      const user = getAuthenticatedUser(request);
       const { token } = request.body as { token: string };
-      const household = await joinByLink(request.user.id, token);
+      const household = await joinByLink(user.id, token);
       return reply.send({
         data: { household: { id: household.id, name: household.name } },
       });
@@ -56,8 +67,9 @@ export async function registerHouseholdRoutes(server: FastifyInstance) {
       schema: { body: JoinByCodeSchema },
     },
     async (request, reply) => {
+      const user = getAuthenticatedUser(request);
       const { code } = request.body as { code: string };
-      const household = await joinByCode(request.user.id, code);
+      const household = await joinByCode(user.id, code);
       return reply.send({
         data: { household: { id: household.id, name: household.name } },
       });
@@ -65,21 +77,23 @@ export async function registerHouseholdRoutes(server: FastifyInstance) {
   );
 
   server.post('/households/:id/invites', async (request, reply) => {
+    const user = getAuthenticatedUser(request);
     const { id } = request.params as { id: string };
     const householdId = parseInt(id, 10);
 
-    const invite = await generateInvite(householdId, request.user.id);
+    const invite = await generateInvite(householdId, user.id);
     return reply.status(201).send({ data: invite });
   });
 
   server.get('/households/:id/members', async (request, reply) => {
+    const user = getAuthenticatedUser(request);
     const { id } = request.params as { id: string };
     const householdId = parseInt(id, 10);
 
     // Verify caller is a member
     const membership = await db.query.userHouseholds.findFirst({
       where: and(
-        eq(userHouseholds.userId, request.user.id),
+        eq(userHouseholds.userId, user.id),
         eq(userHouseholds.householdId, householdId),
       ),
     });
@@ -93,11 +107,12 @@ export async function registerHouseholdRoutes(server: FastifyInstance) {
   });
 
   server.delete('/households/:id/members/:userId', async (request, reply) => {
+    const user = getAuthenticatedUser(request);
     const { id, userId } = request.params as { id: string; userId: string };
     const householdId = parseInt(id, 10);
     const targetUserId = parseInt(userId, 10);
 
-    await removeMember(householdId, request.user.id, targetUserId);
+    await removeMember(householdId, user.id, targetUserId);
     return reply.status(204).send();
   });
 }

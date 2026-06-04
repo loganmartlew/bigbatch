@@ -13,20 +13,34 @@
   },
   "dependencies": {
     "@bigbatch/shared": "workspace:*",
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/modifiers": "^9.0.0",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@mantine/core": "^8.1.2",
     "@mantine/hooks": "^8.1.2",
+    "@sinclair/typebox": "^0.34.49",
+    "@tabler/icons-react": "^3.31.0",
     "@tanstack/react-query": "^5.62.0",
     "@tanstack/react-router": "^1.95.0",
-    "@tabler/icons-react": "^3.31.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-hook-form": "^7.55.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.28.0",
     "@tanstack/router-plugin": "^1.168.5",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.3.0",
+    "eslint": "^9.28.0",
+    "globals": "^16.2.0",
+    "jsdom": "^26.0.0",
     "typescript": "^5.7.0",
+    "typescript-eslint": "^8.33.1",
     "vite": "^6.0.0",
     "vitest": "^3.0.0"
   }

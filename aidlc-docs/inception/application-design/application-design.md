@@ -119,9 +119,12 @@ BigBatch is a **TypeScript monorepo** (pnpm workspaces + Turborepo) with 3 activ
 - **Server state**: TanStack Query (fetch, cache, optimistic updates)
 - **API client**: Hand-written fetch wrapper using shared API types today; OpenAPI-compatible for later code generation if needed
 - **Active household**: Stored in `localStorage`; sent as `X-Household-Id` header on every API request
-- **Forms**: React Hook Form + shared TypeBox/Zod-compatible schemas for validation
+- **Forms**: React Hook Form + shared TypeBox schemas from `packages/shared` for validation (single source of truth — no separate Zod schemas on the frontend)
 - **Cook mode**: Wake Lock API (`navigator.wakeLock.request('screen')`) where supported
 - **Deployment**: Static build → Cloudflare Pages, with response headers configured for the deployed HTML surface
+- **State providers**: Auth and household are **separate providers** — `AuthProvider` handles authentication state only; `HouseholdProvider` manages active household selection and switching. Auth does not depend on or know about households.
+- **Route protection**: Router-level `beforeLoad` guards (TanStack Router) ensure unauthenticated users never see protected content. Focus on best-feeling UX: no content flash, smooth transitions, skeleton/loading states while auth bootstraps.
+- **Feature folders**: Code is organised into `src/features/{domain}` from the start (e.g., `features/auth`, `features/household`, `features/recipes`). Routes remain thin shells that compose feature components.
 
 ### Future Native Clients (deferred)
 
@@ -132,6 +135,7 @@ BigBatch is a **TypeScript monorepo** (pnpm workspaces + Turborepo) with 3 activ
 ### Shared Contracts
 
 - **Shared domain logic**: `packages/shared` (types, schemas, nutrition, scaling, shopping)
+- **TypeBox schemas**: Shared between API (request validation) and web (form validation) — TypeBox is the single validation library across the stack
 - **Current direct consumers**: `apps/api`, `apps/web`
 - **Not shared**: Web UI components, routing, browser storage, and any future native UI implementation details
 

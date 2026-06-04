@@ -6,50 +6,25 @@ import {
   useCallback,
   type ReactNode,
 } from 'react';
-import { api, ApiClientError } from './api-client';
-import {
-  clearActiveHouseholdId,
-  setActiveHouseholdId,
-} from './household-context';
+import { api } from './api-client';
+import type { AuthSession, AuthSnapshot } from '../features/auth/types';
 
-interface User {
-  id: number;
-  email: string;
-  firstName: string;
-  lastName: string;
-  createdAt: string;
-}
-
-interface HouseholdMembership {
-  id: number;
-  name: string;
-  role: string;
-}
-
-interface AuthState {
-  user: User | null;
-  households: HouseholdMembership[];
-  isLoading: boolean;
-  isAuthenticated: boolean;
-}
-
-interface AuthContextValue extends AuthState {
-  login: (email: string, password: string) => Promise<void>;
+interface AuthContextValue extends AuthSnapshot {
+  login: (email: string, password: string) => Promise<AuthSession>;
   register: (
     email: string,
     password: string,
     firstName: string,
     lastName: string,
-  ) => Promise<void>;
+  ) => Promise<AuthSession>;
   logout: () => Promise<void>;
-  refreshUser: () => Promise<void>;
-  setHouseholds: (households: HouseholdMembership[]) => void;
+  refreshUser: () => Promise<AuthSession | null>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<AuthState>({
+  const [state, setState] = useState<AuthSnapshot>({
     user: null,
     households: [],
     isLoading: true,
@@ -58,16 +33,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const refreshUser = useCallback(async () => {
     try {
-      const data = await api.get<{
-        user: User;
-        households: HouseholdMembership[];
-      }>('/auth/me');
+      const data = await api.get<AuthSession>('/auth/me');
       setState({
         user: data.user,
         households: data.households,
         isLoading: false,
         isAuthenticated: true,
       });
+      return data;
     } catch {
       setState({
         user: null,
@@ -75,6 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isLoading: false,
         isAuthenticated: false,
       });
+      return null;
     }
   }, []);
 
@@ -83,19 +57,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [refreshUser]);
 
   const login = useCallback(async (email: string, password: string) => {
-    const data = await api.post<{
-      user: User;
-      households: HouseholdMembership[];
-    }>('/auth/login', { email, password });
+    const data = await api.post<AuthSession>('/auth/login', {
+      email,
+      password,
+    });
     setState({
       user: data.user,
       households: data.households,
       isLoading: false,
       isAuthenticated: true,
     });
-    if (data.households.length > 0) {
-      setActiveHouseholdId(data.households[0]!.id);
-    }
+    return data;
   }, []);
 
   const register = useCallback(
@@ -105,38 +77,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       firstName: string,
       lastName: string,
     ) => {
-      const data = await api.post<{
-        user: User;
-        households: HouseholdMembership[];
-      }>('/auth/register', { email, password, firstName, lastName });
+      const data = await api.post<AuthSession>('/auth/register', {
+        email,
+        password,
+        firstName,
+        lastName,
+      });
       setState({
         user: data.user,
         households: data.households,
         isLoading: false,
         isAuthenticated: true,
       });
+      return data;
     },
     [],
   );
 
   const logout = useCallback(async () => {
-    await api.post('/auth/logout');
+    await api.post<void>('/auth/logout');
     setState({
       user: null,
       households: [],
       isLoading: false,
       isAuthenticated: false,
     });
-    clearActiveHouseholdId();
-  }, []);
-
-  const setHouseholds = useCallback((households: HouseholdMembership[]) => {
-    setState(prev => ({ ...prev, households }));
   }, []);
 
   return (
     <AuthContext.Provider
-      value={{ ...state, login, register, logout, refreshUser, setHouseholds }}
+      value={{ ...state, login, register, logout, refreshUser }}
     >
       {children}
     </AuthContext.Provider>

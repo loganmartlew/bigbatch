@@ -4,12 +4,20 @@
 
 - Use the code in `apps/api`, `apps/web`, and `packages/shared` as the source of truth for implemented behavior.
 - Use `aidlc-docs` for product intent, planned units, and AI-DLC context. Some generated AI-DLC files lag the current code, so confirm target modules and wiring in source before changing them.
-- For AI-DLC workflow or artifact-generation tasks, read [`aidlc.instructions.md`](./instructions/aidlc.instructions.md) as a companion document.
+- For AI-DLC workflow or artifact-generation tasks, prefer the explicit `aidlc-workflow` agent or the prompts under `.github/prompts/` instead of applying AI-DLC to every coding request. Use [`aidlc.instructions.md`](./instructions/aidlc.instructions.md) as the companion document once you are inside that workflow.
 
 ## Workspace shape
 
 - Active workspace packages are `apps/api`, `apps/web`, and `packages/shared`.
 - Use `pnpm` for workspace commands and prefer filtered commands when you only need one package.
+- Follow the scoped instructions under `.github/instructions/` when touching API modules, shared contracts, database code, tests, AI-DLC docs, or workspace configuration.
+
+## AI workflow entrypoints
+
+- Use `.github/agents/aidlc-workflow.agent.md` for staged AI-DLC work.
+- Use `.github/agents/repo-review.agent.md` and `.github/prompts/review-slice.prompt.md` for review-heavy tasks.
+- Use `.github/prompts/new-domain-unit.prompt.md` for shared-first feature slice implementation.
+- Use `../.agents/SKILL-REGISTRY.md` to discover repo-local skills before inventing a new workflow from scratch.
 
 ## Current product scope
 
@@ -37,8 +45,10 @@
 
 - Use TanStack Router file-based routes under `src/routes`, Mantine components for UI, and TanStack Query for server state.
 - Use `src/lib/api-client.ts` for API requests so cookies and `X-Household-Id` handling stay consistent.
-- The active household is client-side state in `src/lib/household-context.ts`; do not introduce a server-side `activeHouseholdId` unless the design changes.
-- Auth and household helpers exist, but the current web entrypoint/root layout does not yet wire the app through `AuthProvider`. Treat auth-related route files as partially integrated scaffolding and check the entrypoint before extending that flow.
+- Treat `src/lib/auth-context.tsx` as the long-term home for auth and active-household client state; prefer provider-managed state over route-local `localStorage` helpers when touching that flow.
+- New or touched forms should move toward React Hook Form + shared TypeBox schemas (from `packages/shared`) instead of route-local `useState` + manual validation.
+- New or touched server-state flows should move toward TanStack Query hooks instead of calling `api.*` directly inside route components.
+- Follow the scoped guidance in `.github/instructions/mantine.instructions.md` and `.github/instructions/web-frontend.instructions.md` when editing the web app.
 - Keep web-only state, routing, and UI in `apps/web`; do not push browser-specific logic into `packages/shared`.
 
 ## Data and testing
@@ -49,7 +59,10 @@
 
 ## Useful docs
 
-- Workflow companion: [`aidlc.instructions.md`](./aidlc.instructions.md)
+- Workflow companion: [`aidlc.instructions.md`](./instructions/aidlc.instructions.md)
+- Workflow entrypoints: [`aidlc-workflow.agent.md`](./agents/aidlc-workflow.agent.md), [`aidlc-kickoff.prompt.md`](./prompts/aidlc-kickoff.prompt.md), [`aidlc-sync-state.prompt.md`](./prompts/aidlc-sync-state.prompt.md)
+- Review and implementation entrypoints: [`repo-review.agent.md`](./agents/repo-review.agent.md), [`review-slice.prompt.md`](./prompts/review-slice.prompt.md), [`new-domain-unit.prompt.md`](./prompts/new-domain-unit.prompt.md)
+- Skill registry: [`../.agents/SKILL-REGISTRY.md`](../.agents/SKILL-REGISTRY.md)
 - Product and application direction: [`../aidlc-docs/inception/application-design/application-design.md`](../aidlc-docs/inception/application-design/application-design.md)
 - Requirements and stack decisions: [`../aidlc-docs/inception/requirements/requirements.md`](../aidlc-docs/inception/requirements/requirements.md), [`../aidlc-docs/inception/requirements/tech-stack-decisions.md`](../aidlc-docs/inception/requirements/tech-stack-decisions.md)
 - AI-DLC state and generated summaries: [`../aidlc-docs/aidlc-state.md`](../aidlc-docs/aidlc-state.md), [`../aidlc-docs/construction/auth-household/code/code-generation-summary.md`](../aidlc-docs/construction/auth-household/code/code-generation-summary.md)

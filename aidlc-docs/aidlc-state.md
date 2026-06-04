@@ -3,23 +3,30 @@
 ## Project Information
 
 - **Project Name**: BigBatch
-- **Project Type**: Greenfield
+- **Project Type**: Greenfield origin
 - **Start Date**: 2026-05-13T00:00:00Z
-- **Current Stage**: CONSTRUCTION - Unit 1: Auth & Household (Functional Design)
+- **Current Stage**: CONSTRUCTION - Unit 3: Recipes (Approved; sync reconciled, Unit 4 not started)
 
 ## Workspace State
 
-- **Existing Code**: No
-- **Programming Languages**: N/A (greenfield)
-- **Build System**: N/A (greenfield)
-- **Project Structure**: Empty
-- **Reverse Engineering Needed**: No
+- **Existing Code**: Yes — `apps/api`, `apps/web`, `packages/shared`
+- **Programming Languages**: TypeScript (ESM), SQL migrations
+- **Build System**: pnpm workspace + Turborepo + TypeScript + Vite + Vitest
+- **Project Structure**: Monorepo with active packages `apps/api`, `apps/web`, and `packages/shared`
+- **Reverse Engineering Needed**: No — project started greenfield and current implementation is tracked through AI-DLC artifacts
 - **Workspace Root**: /home/logan/Projects/bigbatch
 
 ## Code Location Rules
 
 - **Application Code**: Workspace root (NEVER in aidlc-docs/)
 - **Documentation**: aidlc-docs/ only
+
+## Current Implementation Snapshot
+
+- **Unit 0: Foundation**: Implemented across the active monorepo root, `apps/api`, `apps/web`, and `packages/shared`
+- **Unit 1: Auth & Household**: Code is present in API routes/services/tests, shared auth and household schemas, and web auth/onboarding/settings flows
+- **Mobile**: No active `apps/mobile` package exists in the workspace; future native mobile remains deferred
+- **Units 2–5**: Ingredients and Recipes modules are implemented in API, shared contracts, and web flows. Recipe web UX now includes layout-based detail/edit/cook routes, inline ingredient creation from recipe forms, drag-and-drop step ordering, Mantine delete confirmation, visible duplicate/delete error states, and a fixed no-body duplicate request. Shopping and cook-event modules are not implemented yet.
 
 ## Stage Progress
 
@@ -36,9 +43,9 @@
 ### 🟢 CONSTRUCTION PHASE
 
 - [x] Unit 0: Foundation
-- [ ] Unit 1: Auth & Household
-- [ ] Unit 2: Ingredients
-- [ ] Unit 3: Recipes
+- [x] Unit 1: Auth & Household (APPROVED)
+- [x] Unit 2: Ingredients (APPROVED)
+- [x] Unit 3: Recipes (APPROVED)
 - [ ] Unit 4: Shopping
 - [ ] Unit 5: Cook Events
 - [ ] Build and Test

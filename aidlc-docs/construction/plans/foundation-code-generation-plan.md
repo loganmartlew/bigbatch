@@ -1,9 +1,14 @@
 # Unit 0: Foundation — Code Generation Plan
 
+## Sync Note
+
+- Synced against the current source tree on 2026-05-31.
+- The original plan included an `apps/mobile` shell. The active workspace no longer contains that package, so mobile work is tracked as deferred follow-on scope rather than current implementation.
+
 ## Unit Context
 
 **Unit**: Foundation (Unit 0)
-**Scope**: Monorepo scaffolding, shared types/schemas, API server skeleton with full DB schema + core middleware, web shell, mobile shell, CI/test infrastructure
+**Scope**: Monorepo scaffolding, shared types/schemas, API server skeleton with full DB schema + core middleware, web shell, and test infrastructure for the active workspace
 **Stories**: None (infrastructure unit — enables Units 1–5)
 **Dependencies**: None (first unit)
 
@@ -66,15 +71,10 @@
 - [x] Create `apps/web/src/routes/__root.tsx` — TanStack Router root layout
 - [x] Create `apps/web/src/routes/index.tsx` — home page route
 
-### Step 8: Mobile Shell (`apps/mobile`)
+### Step 8: Deferred Mobile Follow-On
 
-- [x] Create `apps/mobile/package.json`
-- [x] Create `apps/mobile/tsconfig.json`
-- [x] Create `apps/mobile/app.json` — Expo config
-- [x] Create `apps/mobile/app/_layout.tsx` — root layout with query provider
-- [x] Create `apps/mobile/app/index.tsx` — home screen
-- [x] Create `apps/mobile/src/lib/api-client.ts` — fetch wrapper with X-Household-Id
-- [x] Create `apps/mobile/src/lib/household-context.ts` — AsyncStorage household state
+- Future fully native iOS/Android work remains out of scope for the active workspace.
+- Do not expect an `apps/mobile` package in the current repository snapshot.
 
 ### Step 9: Test Infrastructure
 
@@ -96,7 +96,6 @@
 | packages/shared | 5     | package.json, tsconfig, index, types, api types, schemas barrel                                           |
 | apps/api        | 12    | package.json, tsconfig, drizzle config, entry, db schema, db client, core module (5 files), lib (2 files) |
 | apps/web        | 8     | package.json, tsconfig, vite config, index.html, main, api client, household context, root route          |
-| apps/mobile     | 6     | package.json, tsconfig, app.json, App, api client, household context                                      |
 | Tests           | 3     | vitest configs (2), schema test, error handler test                                                       |
 | Docs            | 1     | code-generation-summary.md                                                                                |
-| **Total**       | ~40   |                                                                                                           |
+| **Total**       | ~34   | Active workspace only; deferred mobile follow-on excluded                                                 |

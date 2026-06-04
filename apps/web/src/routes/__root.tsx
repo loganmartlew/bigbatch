@@ -1,29 +1,49 @@
 import {
+  Alert,
   AppShell,
   Badge,
   Button,
   Container,
   Group,
+  Loader,
   Stack,
   Text,
   Title,
 } from '@mantine/core';
 import { IconArrowRight, IconSparkles } from '@tabler/icons-react';
-import { createRootRoute, Outlet } from '@tanstack/react-router';
+import {
+  createRootRouteWithContext,
+  Outlet,
+  useNavigate,
+  type ErrorComponentProps,
+} from '@tanstack/react-router';
+import { useState } from 'react';
+import { HouseholdSelector } from '../components/household-selector';
+import { useAuth } from '../lib/auth-context';
+import { getErrorMessage } from '../lib/error-message';
+import type { RouterAppContext } from '../lib/router-context';
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<RouterAppContext>()({
   component: RootLayout,
+  errorComponent: RootErrorBoundary,
 });
 
-const PUBLIC_ROUTES = [
-  '/login',
-  '/register',
-  '/forgot-password',
-  '/reset-password',
-  '/join',
-];
-
 function RootLayout() {
+  const auth = useAuth();
+  const navigate = useNavigate();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+
+    try {
+      await auth.logout();
+      await navigate({ to: '/login', search: { redirect: undefined } });
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
   return (
     <AppShell header={{ height: 84 }} padding='md'>
       <AppShell.Header>
@@ -55,18 +75,71 @@ function RootLayout() {
               </Text>
             </Stack>
 
-            <Group gap='sm' visibleFrom='sm'>
-              <Button component='a' href='#foundation' variant='default'>
-                Foundation
-              </Button>
-              <Button
-                component='a'
-                href='#roadmap'
-                rightSection={<IconArrowRight size={16} />}
-              >
-                Roadmap
-              </Button>
-            </Group>
+            {auth.isLoading ? (
+              <Loader color='orange' size='sm' />
+            ) : auth.isAuthenticated ? (
+              <Group gap='sm' wrap='nowrap'>
+                {auth.households.length > 0 ? <HouseholdSelector /> : null}
+                {auth.households.length > 0 ? (
+                  <Button
+                    onClick={() => navigate({ to: '/ingredients' })}
+                    variant='default'
+                  >
+                    Ingredients
+                  </Button>
+                ) : null}
+                {auth.households.length > 0 ? (
+                  <Button
+                    onClick={() => navigate({ to: '/recipes' })}
+                    variant='default'
+                  >
+                    Recipes
+                  </Button>
+                ) : null}
+                {auth.households.length > 0 ? (
+                  <Button
+                    onClick={() => navigate({ to: '/settings/household' })}
+                    variant='default'
+                  >
+                    Household settings
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => navigate({ to: '/onboarding' })}
+                    variant='default'
+                  >
+                    Set up household
+                  </Button>
+                )}
+                <Button
+                  loading={isLoggingOut}
+                  onClick={handleLogout}
+                  variant='subtle'
+                >
+                  Log out
+                </Button>
+              </Group>
+            ) : (
+              <Group gap='sm'>
+                <Button
+                  onClick={() =>
+                    navigate({
+                      to: '/login',
+                      search: { redirect: undefined },
+                    })
+                  }
+                  variant='default'
+                >
+                  Log in
+                </Button>
+                <Button
+                  onClick={() => navigate({ to: '/register' })}
+                  rightSection={<IconArrowRight size={16} />}
+                >
+                  Create account
+                </Button>
+              </Group>
+            )}
           </Group>
         </Container>
       </AppShell.Header>
@@ -75,5 +148,18 @@ function RootLayout() {
         <Outlet />
       </AppShell.Main>
     </AppShell>
+  );
+}
+
+function RootErrorBoundary({ error, reset }: ErrorComponentProps) {
+  return (
+    <Container py='xl' size='sm'>
+      <Stack gap='md'>
+        <Alert color='red' title='Something went wrong' variant='light'>
+          {getErrorMessage(error, 'An unexpected error interrupted this page.')}
+        </Alert>
+        <Button onClick={() => reset()}>Try again</Button>
+      </Stack>
+    </Container>
   );
 }

@@ -1,13 +1,12 @@
 import { eq } from 'drizzle-orm';
 import * as argon2 from 'argon2';
-import zxcvbn from 'zxcvbn';
 import { randomBytes } from 'node:crypto';
+import { getPasswordStrengthValidationMessage } from '@bigbatch/shared';
 import { db } from '../../db/client.js';
 import {
   users,
   sessions,
   userHouseholds,
-  households,
   passwordResetTokens,
 } from '../../db/schema.js';
 import { lucia } from '../../lib/lucia.js';
@@ -45,14 +44,10 @@ export async function registerUser(
   const trimmedFirstName = firstName.trim();
   const trimmedLastName = lastName.trim();
 
-  // Validate password strength
-  const strength = zxcvbn(password);
-  if (strength.score < 2) {
-    const feedback =
-      strength.feedback.warning ||
-      strength.feedback.suggestions.join(' ') ||
-      'Password is too weak';
-    throw new ValidationError(feedback);
+  const passwordValidationMessage =
+    getPasswordStrengthValidationMessage(password);
+  if (passwordValidationMessage) {
+    throw new ValidationError(passwordValidationMessage);
   }
 
   // Check email uniqueness
@@ -193,14 +188,10 @@ export async function executePasswordReset(token: string, newPassword: string) {
     throw new NotFoundError('Reset link is invalid or expired');
   }
 
-  // Validate password strength
-  const strength = zxcvbn(newPassword);
-  if (strength.score < 2) {
-    const feedback =
-      strength.feedback.warning ||
-      strength.feedback.suggestions.join(' ') ||
-      'Password is too weak';
-    throw new ValidationError(feedback);
+  const passwordValidationMessage =
+    getPasswordStrengthValidationMessage(newPassword);
+  if (passwordValidationMessage) {
+    throw new ValidationError(passwordValidationMessage);
   }
 
   const hashedPassword = await argon2.hash(newPassword, {

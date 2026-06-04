@@ -1,5 +1,11 @@
 # Unit 0: Foundation — Code Generation Summary
 
+## Sync Note
+
+- Synced against the current source tree on 2026-05-31.
+- This summary describes the active foundation surface as it exists today; later units have extended some of these files.
+- No active `apps/mobile` package exists in the workspace. Future native mobile remains deferred.
+
 ## Active Foundation Surface
 
 ### Root
@@ -19,31 +25,31 @@
 | -------------------------------------- | ----------------------------------------------------------------------- |
 | `packages/shared/package.json`         | `@bigbatch/shared` — exports types + schemas                            |
 | `packages/shared/tsconfig.json`        | Extends base config                                                     |
-| `packages/shared/src/index.ts`         | Barrel re-export of types + api                                         |
+| `packages/shared/src/index.ts`         | Barrel re-export of shared types, API envelopes, and schemas            |
 | `packages/shared/src/types/index.ts`   | All domain types: User, Household, Recipe, Ingredient, etc. + Unit enum |
 | `packages/shared/src/types/api.ts`     | `ApiResponse<T>`, `ApiErrorResponse`, `ERROR_CODES`, `ErrorCode`        |
-| `packages/shared/src/schemas/index.ts` | Empty barrel — populated in later units                                 |
+| `packages/shared/src/schemas/index.ts` | Barrel re-export of shared TypeBox schemas                              |
 
 ### API Package
 
-| File                                              | Purpose                                                                                              |
-| ------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `apps/api/package.json`                           | `@bigbatch/api` — Fastify, Drizzle, Lucia, argon2                                                    |
-| `apps/api/tsconfig.json`                          | Extends base config                                                                                  |
-| `apps/api/drizzle.config.ts`                      | Drizzle Kit config for Turso migrations                                                              |
-| `apps/api/vitest.config.ts`                       | Vitest config for API tests                                                                          |
-| `apps/api/src/index.ts`                           | Fastify entry point with helmet, cors, rate-limit, core plugin                                       |
-| `apps/api/src/db/schema.ts`                       | Complete Drizzle schema — 12 tables with columns, FKs, indexes, relations                            |
-| `apps/api/src/db/client.ts`                       | Drizzle client factory with Turso/libSQL                                                             |
-| `apps/api/src/lib/env.ts`                         | Environment variable loader (`DATABASE_URL`, `SESSION_SECRET`, etc.)                                 |
-| `apps/api/src/lib/lucia.ts`                       | Lucia auth adapter with Drizzle for sessions + users                                                 |
-| `apps/api/src/modules/core/index.ts`              | Core Fastify plugin — registers error handler, auth guard, household resolver                        |
-| `apps/api/src/modules/core/errors.ts`             | Error classes: Validation, Authentication, Forbidden, NotFound, Conflict, RateLimit, ExternalService |
-| `apps/api/src/modules/core/error-handler.ts`      | Global error handler — AppError → typed response, unknown → generic 500                              |
-| `apps/api/src/modules/core/auth-guard.ts`         | Session validation via Lucia, attaches `request.user`, skips public routes                           |
-| `apps/api/src/modules/core/household-resolver.ts` | `X-Household-Id` header → validate membership → attach `householdId` + `userRole`                    |
-| `apps/api/src/__tests__/schema.test.ts`           | Schema validation tests (table existence, soft delete columns)                                       |
-| `apps/api/src/__tests__/errors.test.ts`           | Error class unit tests (status codes, error codes, default messages)                                 |
+| File                                              | Purpose                                                                                                |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `apps/api/package.json`                           | `@bigbatch/api` — Fastify, Drizzle, Lucia, auth/security dependencies                                  |
+| `apps/api/tsconfig.json`                          | Extends base config                                                                                    |
+| `apps/api/drizzle.config.ts`                      | Drizzle Kit config for Turso migrations                                                                |
+| `apps/api/vitest.config.ts`                       | Vitest config for API tests                                                                            |
+| `apps/api/src/index.ts`                           | Fastify entry point with helmet, cookie, cors, rate-limit, core plugin, and auth plugin                |
+| `apps/api/src/db/schema.ts`                       | Complete Drizzle schema — 12 tables with columns, FKs, indexes, relations                              |
+| `apps/api/src/db/client.ts`                       | Drizzle client factory with Turso/libSQL                                                               |
+| `apps/api/src/lib/env.ts`                         | Environment variable loader (`DATABASE_URL`, `SESSION_SECRET`, `RESEND_API_KEY`, `FRONTEND_URL`, etc.) |
+| `apps/api/src/lib/lucia.ts`                       | Lucia auth adapter with Drizzle for sessions + users                                                   |
+| `apps/api/src/modules/core/index.ts`              | Core Fastify plugin — registers error handler, auth guard, household resolver                          |
+| `apps/api/src/modules/core/errors.ts`             | Error classes: Validation, Authentication, Forbidden, NotFound, Conflict, RateLimit, ExternalService   |
+| `apps/api/src/modules/core/error-handler.ts`      | Global error handler — AppError → typed response, unknown → generic 500                                |
+| `apps/api/src/modules/core/auth-guard.ts`         | Session validation via Lucia, attaches `request.user`, skips public routes                             |
+| `apps/api/src/modules/core/household-resolver.ts` | `X-Household-Id` header → validate membership → attach `householdId` + `userRole`                      |
+| `apps/api/src/__tests__/schema.test.ts`           | Schema validation tests (table existence, soft delete columns)                                         |
+| `apps/api/src/__tests__/errors.test.ts`           | Error class unit tests (status codes, error codes, default messages)                                   |
 
 ### Web Shell
 

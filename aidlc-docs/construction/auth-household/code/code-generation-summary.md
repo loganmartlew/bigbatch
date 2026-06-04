@@ -1,5 +1,12 @@
 # Unit 1: Auth & Household — Code Generation Summary
 
+## Sync Note
+
+- Synced against the current source tree on 2026-06-01.
+- This summary reflects the active workspace only: `apps/api`, `apps/web`, and `packages/shared`.
+- No active `apps/mobile` package exists in the workspace; future native mobile remains deferred.
+- Approval state: Unit 1 remains approved in `aidlc-docs/aidlc-state.md`; later units now extend the active workspace beyond the original Unit 1 scope.
+
 ## Overview
 
 Unit 1 implements user authentication (registration, login, logout, password reset) and household management (create, join by link/code, invite generation, member listing/removal).
@@ -40,18 +47,6 @@ Unit 1 implements user authentication (registration, login, logout, password res
 | `src/routes/onboarding.tsx`             | Onboarding: create or join household                             |
 | `src/routes/settings/household.tsx`     | Household settings: members, invite generation                   |
 
-### Mobile (`apps/mobile/`)
-
-| File                         | Purpose                                 |
-| ---------------------------- | --------------------------------------- |
-| `src/lib/auth-context.tsx`   | React Native auth context (mirrors web) |
-| `app/login.tsx`              | Login screen                            |
-| `app/register.tsx`           | Register screen                         |
-| `app/forgot-password.tsx`    | Forgot password screen                  |
-| `app/onboarding.tsx`         | Onboarding: create or join household    |
-| `app/join-code.tsx`          | Join by invite code screen              |
-| `app/household-settings.tsx` | Household settings screen               |
-
 ## Files Modified
 
 | File                                              | Changes                                                          |
@@ -63,7 +58,6 @@ Unit 1 implements user authentication (registration, login, logout, password res
 | `apps/api/src/modules/core/household-resolver.ts` | Expanded AUTH_ONLY_ROUTES                                        |
 | `apps/api/src/index.ts`                           | Registered @fastify/cookie and authPlugin                        |
 | `apps/web/src/routes/__root.tsx`                  | Integrated AuthProvider, HouseholdSelector, route guards         |
-| `apps/mobile/app/_layout.tsx`                     | Wrapped with AuthProvider                                        |
 | `packages/shared/src/schemas/index.ts`            | Re-exports auth + household schemas                              |
 | `packages/shared/src/index.ts`                    | Exports schemas barrel                                           |
 | `packages/shared/package.json`                    | Added @sinclair/typebox                                          |
@@ -88,7 +82,8 @@ Unit 1 implements user authentication (registration, login, logout, password res
 
 ## Test Results
 
-22 tests passing (10 auth + 12 household), including property-based tests with fast-check.
+- API auth/household service coverage includes 22 tests (10 auth + 12 household), including property-based tests with fast-check.
+- The active workspace also contains web and shared-package tests outside this unit summary.
 
 ## Security Compliance
 
@@ -97,3 +92,10 @@ Unit 1 implements user authentication (registration, login, logout, password res
 - No user enumeration on login failure or password reset
 - Owner-only enforcement on invite generation and member removal
 - Invite codes use unambiguous alphabet (no 0/O/I/L/1)
+
+## Current Scope Boundaries
+
+- Active implementation is limited to `apps/api`, `apps/web`, and `packages/shared`.
+- Household selection remains client-side on the web and is sent to the API via `X-Household-Id`.
+- Ingredients and recipes were implemented in later units; shopping and cook-event UI/API flows remain future units.
+

@@ -18,6 +18,7 @@ const AUTH_ONLY_ROUTES = new Set([
   'POST /households/:id/invites',
   'GET /households/:id/members',
   'DELETE /households/:id/members/:userId',
+  'GET /ingredients/search/openfoodfacts',
 ]);
 
 export async function householdResolver(

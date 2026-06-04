@@ -1,31 +1,31 @@
-import {
-  getActiveHouseholdId,
-  setActiveHouseholdId,
-} from '../lib/household-context';
+import { Select } from '@mantine/core';
 import { useAuth } from '../lib/auth-context';
+import { useHousehold } from '../lib/household-context';
 
 export function HouseholdSelector() {
   const { households } = useAuth();
-  const activeId = getActiveHouseholdId();
+  const { activeHouseholdId, switchHousehold } = useHousehold();
 
   if (households.length === 0) return null;
 
   return (
-    <select
-      value={activeId ?? ''}
-      onChange={e => {
-        const id = parseInt(e.target.value, 10);
-        if (!Number.isNaN(id)) {
-          setActiveHouseholdId(id);
-          window.location.reload();
+    <Select
+      allowDeselect={false}
+      aria-label='Active household'
+      data={households.map(household => ({
+        label: household.name,
+        value: String(household.id),
+      }))}
+      label='Household'
+      onChange={(value: string | null) => {
+        if (!value) {
+          return;
         }
+
+        switchHousehold(Number.parseInt(value, 10));
       }}
-    >
-      {households.map(h => (
-        <option key={h.id} value={h.id}>
-          {h.name}
-        </option>
-      ))}
-    </select>
+      value={activeHouseholdId === null ? null : String(activeHouseholdId)}
+      w={220}
+    />
   );
 }

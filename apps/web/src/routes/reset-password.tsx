@@ -1,75 +1,51 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useState } from 'react';
-import { api } from '../lib/api-client';
+import { Alert, Center, Loader } from '@mantine/core';
+import { createFileRoute } from '@tanstack/react-router';
+import { AuthShell } from '../features/auth/components/auth-shell';
+import { ResetPasswordForm } from '../features/auth/components/reset-password-form';
+import { redirectAuthenticatedUser } from '../features/auth/utils/route-guards';
+import { useAuth } from '../lib/auth-context';
 
 export const Route = createFileRoute('/reset-password')({
+  beforeLoad: ({ context }) => {
+    redirectAuthenticatedUser(context);
+  },
+  validateSearch: (search: Record<string, unknown>) => ({
+    token: typeof search.token === 'string' ? search.token : '',
+  }),
   component: ResetPasswordPage,
 });
 
 function ResetPasswordPage() {
-  const navigate = useNavigate();
-  const params = new URLSearchParams(window.location.search);
-  const token = params.get('token') ?? '';
+  const auth = useAuth();
+  const { token } = Route.useSearch();
 
-  const [newPassword, setNewPassword] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
-    try {
-      await api.post('/auth/reset-password', { token, newPassword });
-      setSuccess(true);
-    } catch (err: any) {
-      setError(err.message || 'Reset failed');
-    } finally {
-      setLoading(false);
-    }
+  if (auth.isLoading) {
+    return (
+      <AuthShell
+        badge='Session'
+        description='Checking whether you already have an active session.'
+        title='Loading your account'
+      >
+        <Center py='xl'>
+          <Loader color='orange' />
+        </Center>
+      </AuthShell>
+    );
   }
 
   if (!token) {
     return (
-      <div>
-        <h2>Invalid Reset Link</h2>
-        <p>No reset token found. Please request a new password reset.</p>
-        <a href='/forgot-password'>Request reset</a>
-      </div>
+      <AuthShell
+        badge='Invalid link'
+        description='This reset link is missing the token BigBatch needs to verify the request.'
+        title='Reset link unavailable'
+      >
+        <Alert color='red' title='No reset token found' variant='light'>
+          Request a new password reset link and try again.
+        </Alert>
+      </AuthShell>
     );
   }
 
-  if (success) {
-    return (
-      <div>
-        <h2>Password Reset</h2>
-        <p>Your password has been reset successfully.</p>
-        <a href='/login'>Log in</a>
-      </div>
-    );
-  }
-
-  return (
-    <div>
-      <h2>Reset Password</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor='newPassword'>New Password</label>
-          <input
-            id='newPassword'
-            type='password'
-            value={newPassword}
-            onChange={e => setNewPassword(e.target.value)}
-            required
-            minLength={8}
-          />
-        </div>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button type='submit' disabled={loading}>
-          {loading ? 'Resetting…' : 'Reset Password'}
-        </button>
-      </form>
-    </div>
-  );
+  return <ResetPasswordForm token={token} />;
 }

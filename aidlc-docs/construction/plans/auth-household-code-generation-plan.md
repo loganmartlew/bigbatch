@@ -1,9 +1,14 @@
 # Unit 1: Auth & Household — Code Generation Plan
 
+## Sync Note
+
+- Synced against the current source tree on 2026-05-31.
+- The original plan included mobile auth/household screens. The active workspace no longer contains an `apps/mobile` package, so that work is tracked as deferred follow-on scope rather than current implementation.
+
 ## Unit Context
 
 **Unit**: Auth & Household (Unit 1)
-**Scope**: User registration, login, sessions, password reset, household CRUD, invites, member management
+**Scope**: User registration, login, sessions, password reset, household CRUD, invites, and member management across API, shared contracts, and web flows
 **Stories**: US-01, US-02, US-03, US-04, US-05, US-06, US-27, US-28
 **Dependencies**: Unit 0 (Foundation) — DB schema, core middleware, error classes, Lucia setup
 
@@ -74,15 +79,10 @@
 - [x] Create `apps/web/src/components/household-selector.tsx` — dropdown in header for switching households
 - [x] Update `apps/web/src/routes/__root.tsx` — integrate auth context, household selector, route guards
 
-### Step 12: Mobile — Auth & Household Screens
+### Step 12: Deferred Mobile Follow-On
 
-- [x] Create `apps/mobile/app/login.tsx` — LoginScreen
-- [x] Create `apps/mobile/app/register.tsx` — RegisterScreen
-- [x] Create `apps/mobile/app/forgot-password.tsx` — ForgotPasswordScreen
-- [x] Create `apps/mobile/app/onboarding.tsx` — OnboardingScreen
-- [x] Create `apps/mobile/app/join-code.tsx` — JoinByCodeScreen
-- [x] Create `apps/mobile/app/household-settings.tsx` — HouseholdSettingsScreen
-- [x] Create `apps/mobile/src/lib/auth-context.tsx` — auth state management
+- Future native mobile auth/onboarding/settings work remains out of scope for the active workspace.
+- Do not expect `apps/mobile` files in the current repository snapshot.
 
 ### Step 13: Documentation Summary
 
@@ -102,7 +102,7 @@
 | Step 8      | Plugin wiring                                                                           |
 | Step 9      | Test coverage for all stories                                                           |
 | Steps 10–11 | Web UI for all stories                                                                  |
-| Step 12     | Mobile UI for all stories                                                               |
+| Step 12     | Deferred mobile follow-on — not part of the active workspace snapshot                   |
 
 ## File Count Estimate
 
@@ -114,6 +114,5 @@
 | Tests               | 2     | auth service tests, household service tests                                                               |
 | Web new             | 9     | 5 auth pages, onboarding, household settings, auth context, household selector                            |
 | Web modified        | 1     | \_\_root.tsx                                                                                              |
-| Mobile new          | 7     | 4 auth screens, onboarding, join-code, household settings, auth context                                   |
 | Docs                | 1     | code-generation-summary.md                                                                                |
-| **Total**           | ~35   | 7 modified + ~28 new                                                                                      |
+| **Total**           | ~28   | Active workspace only; deferred mobile follow-on excluded                                                 |
