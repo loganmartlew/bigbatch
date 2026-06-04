@@ -1,0 +1,7 @@
+### TODO List ###
+
+UI Inconsistencies
+- Pages have different widths
+
+Missing Features
+- No way to create or join a new household
