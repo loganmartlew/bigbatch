@@ -5,7 +5,7 @@
 - **Project Name**: BigBatch
 - **Project Type**: Greenfield origin
 - **Start Date**: 2026-05-13T00:00:00Z
-- **Current Stage**: CONSTRUCTION - Unit 3: Recipes (Approved; sync reconciled, Unit 4 not started)
+- **Current Stage**: CONSTRUCTION - Unit 4: Shopping (Code Generation Planning)
 
 ## Workspace State
 
@@ -46,7 +46,7 @@
 - [x] Unit 1: Auth & Household (APPROVED)
 - [x] Unit 2: Ingredients (APPROVED)
 - [x] Unit 3: Recipes (APPROVED)
-- [ ] Unit 4: Shopping
+- [ ] Unit 4: Shopping (Functional Design APPROVED; Code Generation in progress)
 - [ ] Unit 5: Cook Events
 - [ ] Build and Test
 

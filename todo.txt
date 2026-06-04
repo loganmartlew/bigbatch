@@ -5,3 +5,7 @@ UI Inconsistencies
 
 Missing Features
 - No way to create or join a new household
+- Can't manage categories
+
+Security Considerations
+- Header for householdID seems fragile, get from body / query params etc
