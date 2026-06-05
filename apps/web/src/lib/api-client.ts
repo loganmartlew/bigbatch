@@ -6,6 +6,14 @@ interface ApiRequestOptions {
   householdId?: number | null;
 }
 
+function isApiRequestOptions(value: unknown): value is ApiRequestOptions {
+  if (value == null || typeof value !== 'object') {
+    return false;
+  }
+
+  return 'householdId' in value || Object.keys(value).length === 0;
+}
+
 class ApiClientError extends Error {
   constructor(
     public readonly status: number,
@@ -73,8 +81,17 @@ export const api = {
     request<T>('PUT', path, body, options),
   patch: <T>(path: string, body?: unknown, options?: ApiRequestOptions) =>
     request<T>('PATCH', path, body, options),
-  delete: <T>(path: string, options?: ApiRequestOptions) =>
-    request<T>('DELETE', path, undefined, options),
+  delete: <T>(
+    path: string,
+    bodyOrOptions?: unknown | ApiRequestOptions,
+    options?: ApiRequestOptions,
+  ) => {
+    if (options === undefined && isApiRequestOptions(bodyOrOptions)) {
+      return request<T>('DELETE', path, undefined, bodyOrOptions);
+    }
+
+    return request<T>('DELETE', path, bodyOrOptions, options);
+  },
 };
 
 export { ApiClientError };

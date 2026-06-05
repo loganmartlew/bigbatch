@@ -224,16 +224,4 @@ export interface AddIngredientToListInput {
   unit: string;
 }
 
-// ─── Cook Events ─────────────────────────────────────────────
-
-export interface CookEvent {
-  id: number;
-  recipeId: number;
-  userId: number;
-  date: string;
-  batchSize: number;
-  notes: string | null;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-}
+export * from './cook-events.js';

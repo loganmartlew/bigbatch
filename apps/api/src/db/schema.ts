@@ -28,6 +28,7 @@ export const users = sqliteTable('users', {
 export const usersRelations = relations(users, ({ many }) => ({
   userHouseholds: many(userHouseholds),
   sessions: many(sessions),
+  queuedCooks: many(queuedCooks),
   cookEvents: many(cookEvents),
   passwordResetTokens: many(passwordResetTokens),
 }));
@@ -56,6 +57,7 @@ export const householdsRelations = relations(households, ({ one, many }) => ({
   userHouseholds: many(userHouseholds),
   ingredients: many(ingredients),
   recipes: many(recipes),
+  queuedCooks: many(queuedCooks),
   shoppingListItems: many(shoppingListItems),
   shoppingCategories: many(shoppingCategories),
   invites: many(householdInvites),
@@ -189,6 +191,7 @@ export const ingredientsRelations = relations(ingredients, ({ one, many }) => ({
     references: [shoppingCategories.id],
   }),
   recipeIngredients: many(recipeIngredients),
+  queuedCookIngredients: many(queuedCookIngredients),
 }));
 
 // ─── Recipes ─────────────────────────────────────────────────
@@ -238,6 +241,7 @@ export const recipesRelations = relations(recipes, ({ one, many }) => ({
   instructions: many(recipeInstructions),
   ingredients: many(recipeIngredients),
   tagAssignments: many(recipeTagAssignments),
+  queuedCooks: many(queuedCooks),
   cookEvents: many(cookEvents),
 }));
 
@@ -448,6 +452,98 @@ export const shoppingListItemsRelations = relations(
     }),
     ingredient: one(ingredients, {
       fields: [shoppingListItems.ingredientId],
+      references: [ingredients.id],
+    }),
+  }),
+);
+
+// ─── Queued Cooks ───────────────────────────────────────────
+
+export const queuedCooks = sqliteTable(
+  'queued_cooks',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    householdId: integer('household_id')
+      .notNull()
+      .references(() => households.id),
+    recipeId: integer('recipe_id')
+      .notNull()
+      .references(() => recipes.id),
+    createdBy: integer('created_by')
+      .notNull()
+      .references(() => users.id),
+    recipeBatchSizeSnapshot: integer('recipe_batch_size_snapshot').notNull(),
+    selectedBatchSize: integer('selected_batch_size').notNull(),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(datetime('now'))`),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(datetime('now'))`),
+  },
+  table => [
+    index('queued_cooks_household_idx').on(table.householdId),
+    index('queued_cooks_recipe_idx').on(table.recipeId),
+    index('queued_cooks_created_by_idx').on(table.createdBy),
+  ],
+);
+
+export const queuedCooksRelations = relations(queuedCooks, ({ one, many }) => ({
+  household: one(households, {
+    fields: [queuedCooks.householdId],
+    references: [households.id],
+  }),
+  recipe: one(recipes, {
+    fields: [queuedCooks.recipeId],
+    references: [recipes.id],
+  }),
+  creator: one(users, {
+    fields: [queuedCooks.createdBy],
+    references: [users.id],
+  }),
+  ingredients: many(queuedCookIngredients),
+}));
+
+export const queuedCookIngredients = sqliteTable(
+  'queued_cook_ingredients',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    queuedCookId: integer('queued_cook_id')
+      .notNull()
+      .references(() => queuedCooks.id, { onDelete: 'cascade' }),
+    ingredientId: integer('ingredient_id')
+      .notNull()
+      .references(() => ingredients.id),
+    unit: text('unit').notNull(),
+    baseQuantity: real('base_quantity').notNull(),
+    requiredQuantity: real('required_quantity').notNull(),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(datetime('now'))`),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(datetime('now'))`),
+  },
+  table => [
+    uniqueIndex('queued_cook_ingredients_unique_idx').on(
+      table.queuedCookId,
+      table.ingredientId,
+      table.unit,
+    ),
+    index('queued_cook_ingredients_queued_cook_idx').on(table.queuedCookId),
+    index('queued_cook_ingredients_ingredient_idx').on(table.ingredientId),
+  ],
+);
+
+export const queuedCookIngredientsRelations = relations(
+  queuedCookIngredients,
+  ({ one }) => ({
+    queuedCook: one(queuedCooks, {
+      fields: [queuedCookIngredients.queuedCookId],
+      references: [queuedCooks.id],
+    }),
+    ingredient: one(ingredients, {
+      fields: [queuedCookIngredients.ingredientId],
       references: [ingredients.id],
     }),
   }),

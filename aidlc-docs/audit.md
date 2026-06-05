@@ -377,3 +377,21 @@
 **Context**: Construction — Unit 5 Functional Design complete and awaiting user approval.
 
 ---
+
+## Construction — Unit 5 Approval Recorded
+
+**Timestamp**: 2026-06-05T00:00:00Z
+**User Input**: "Unit 5 is approved"
+**AI Response**: Recorded explicit approval for Unit 5 Cook Events. Updated `aidlc-docs/aidlc-state.md` to mark Unit 5 approved, moved the tracked current stage to Build and Test, and reconciled the implementation snapshot with the current source tree: shared cook-event contracts, API cook-events module/tests, web cook-events feature components/tests, and the queued-cooks migration are all present.
+**Context**: Construction stage approval gate after the revised Unit 5 cook-events implementation.
+
+---
+
+## AI-DLC Sync State — Unit 5 Construction Reconciled
+
+**Timestamp**: 2026-06-05T22:30:00Z
+**User Input**: "/AIDLC-Sync-State Make sure everything is up to date"
+**AI Response**: Audited `aidlc-docs/aidlc-state.md`, `aidlc-docs/audit.md`, and Unit 5 construction artifacts against the active source tree. Added `aidlc-docs/construction/cook-events/code/code-generation-summary.md` to document the implemented Unit 5 surface across shared contracts, API modules/tests, migration output, and web cook-events flows. Refined `aidlc-docs/aidlc-state.md` to distinguish focused Unit 5 validation from the still-open full Build and Test stage.
+**Context**: AI-DLC state reconciliation after direct implementation and focused validation work.
+
+---

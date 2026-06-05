@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import * as schema from '../db/schema.js';
 
 describe('Database Schema', () => {
-  it('exports all 12 tables', () => {
+  it('exports all 14 tables', () => {
     const tables = [
       schema.users,
       schema.households,
@@ -15,10 +15,12 @@ describe('Database Schema', () => {
       schema.recipeIngredients,
       schema.shoppingCategories,
       schema.shoppingListItems,
+      schema.queuedCooks,
+      schema.queuedCookIngredients,
       schema.cookEvents,
     ];
 
-    expect(tables).toHaveLength(12);
+    expect(tables).toHaveLength(14);
     for (const table of tables) {
       expect(table).toBeDefined();
     }

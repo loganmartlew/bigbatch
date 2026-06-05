@@ -19,10 +19,12 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ShoppingIndexRouteImport } from './routes/shopping/index'
 import { Route as RecipesIndexRouteImport } from './routes/recipes/index'
 import { Route as IngredientsIndexRouteImport } from './routes/ingredients/index'
+import { Route as CooksIndexRouteImport } from './routes/cooks/index'
 import { Route as SettingsHouseholdRouteImport } from './routes/settings/household'
 import { Route as RecipesNewRouteImport } from './routes/recipes/new'
 import { Route as RecipesRecipeIdRouteImport } from './routes/recipes/$recipeId'
 import { Route as IngredientsNewRouteImport } from './routes/ingredients/new'
+import { Route as CooksQueuedCookIdRouteImport } from './routes/cooks/$queuedCookId'
 import { Route as RecipesRecipeIdIndexRouteImport } from './routes/recipes/$recipeId.index'
 import { Route as RecipesRecipeIdEditRouteImport } from './routes/recipes/$recipeId.edit'
 import { Route as RecipesRecipeIdCookRouteImport } from './routes/recipes/$recipeId.cook'
@@ -78,6 +80,11 @@ const IngredientsIndexRoute = IngredientsIndexRouteImport.update({
   path: '/ingredients/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CooksIndexRoute = CooksIndexRouteImport.update({
+  id: '/cooks/',
+  path: '/cooks/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsHouseholdRoute = SettingsHouseholdRouteImport.update({
   id: '/settings/household',
   path: '/settings/household',
@@ -96,6 +103,11 @@ const RecipesRecipeIdRoute = RecipesRecipeIdRouteImport.update({
 const IngredientsNewRoute = IngredientsNewRouteImport.update({
   id: '/ingredients/new',
   path: '/ingredients/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CooksQueuedCookIdRoute = CooksQueuedCookIdRouteImport.update({
+  id: '/cooks/$queuedCookId',
+  path: '/cooks/$queuedCookId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RecipesRecipeIdIndexRoute = RecipesRecipeIdIndexRouteImport.update({
@@ -128,10 +140,12 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/cooks/$queuedCookId': typeof CooksQueuedCookIdRoute
   '/ingredients/new': typeof IngredientsNewRoute
   '/recipes/$recipeId': typeof RecipesRecipeIdRouteWithChildren
   '/recipes/new': typeof RecipesNewRoute
   '/settings/household': typeof SettingsHouseholdRoute
+  '/cooks/': typeof CooksIndexRoute
   '/ingredients/': typeof IngredientsIndexRoute
   '/recipes/': typeof RecipesIndexRoute
   '/shopping/': typeof ShoppingIndexRoute
@@ -148,9 +162,11 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/cooks/$queuedCookId': typeof CooksQueuedCookIdRoute
   '/ingredients/new': typeof IngredientsNewRoute
   '/recipes/new': typeof RecipesNewRoute
   '/settings/household': typeof SettingsHouseholdRoute
+  '/cooks': typeof CooksIndexRoute
   '/ingredients': typeof IngredientsIndexRoute
   '/recipes': typeof RecipesIndexRoute
   '/shopping': typeof ShoppingIndexRoute
@@ -168,10 +184,12 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/cooks/$queuedCookId': typeof CooksQueuedCookIdRoute
   '/ingredients/new': typeof IngredientsNewRoute
   '/recipes/$recipeId': typeof RecipesRecipeIdRouteWithChildren
   '/recipes/new': typeof RecipesNewRoute
   '/settings/household': typeof SettingsHouseholdRoute
+  '/cooks/': typeof CooksIndexRoute
   '/ingredients/': typeof IngredientsIndexRoute
   '/recipes/': typeof RecipesIndexRoute
   '/shopping/': typeof ShoppingIndexRoute
@@ -190,10 +208,12 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/register'
     | '/reset-password'
+    | '/cooks/$queuedCookId'
     | '/ingredients/new'
     | '/recipes/$recipeId'
     | '/recipes/new'
     | '/settings/household'
+    | '/cooks/'
     | '/ingredients/'
     | '/recipes/'
     | '/shopping/'
@@ -210,9 +230,11 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/register'
     | '/reset-password'
+    | '/cooks/$queuedCookId'
     | '/ingredients/new'
     | '/recipes/new'
     | '/settings/household'
+    | '/cooks'
     | '/ingredients'
     | '/recipes'
     | '/shopping'
@@ -229,10 +251,12 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/register'
     | '/reset-password'
+    | '/cooks/$queuedCookId'
     | '/ingredients/new'
     | '/recipes/$recipeId'
     | '/recipes/new'
     | '/settings/household'
+    | '/cooks/'
     | '/ingredients/'
     | '/recipes/'
     | '/shopping/'
@@ -250,10 +274,12 @@ export interface RootRouteChildren {
   OnboardingRoute: typeof OnboardingRoute
   RegisterRoute: typeof RegisterRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  CooksQueuedCookIdRoute: typeof CooksQueuedCookIdRoute
   IngredientsNewRoute: typeof IngredientsNewRoute
   RecipesRecipeIdRoute: typeof RecipesRecipeIdRouteWithChildren
   RecipesNewRoute: typeof RecipesNewRoute
   SettingsHouseholdRoute: typeof SettingsHouseholdRoute
+  CooksIndexRoute: typeof CooksIndexRoute
   IngredientsIndexRoute: typeof IngredientsIndexRoute
   RecipesIndexRoute: typeof RecipesIndexRoute
   ShoppingIndexRoute: typeof ShoppingIndexRoute
@@ -332,6 +358,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IngredientsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cooks/': {
+      id: '/cooks/'
+      path: '/cooks'
+      fullPath: '/cooks/'
+      preLoaderRoute: typeof CooksIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings/household': {
       id: '/settings/household'
       path: '/settings/household'
@@ -358,6 +391,13 @@ declare module '@tanstack/react-router' {
       path: '/ingredients/new'
       fullPath: '/ingredients/new'
       preLoaderRoute: typeof IngredientsNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cooks/$queuedCookId': {
+      id: '/cooks/$queuedCookId'
+      path: '/cooks/$queuedCookId'
+      fullPath: '/cooks/$queuedCookId'
+      preLoaderRoute: typeof CooksQueuedCookIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/recipes/$recipeId/': {
@@ -415,10 +455,12 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingRoute: OnboardingRoute,
   RegisterRoute: RegisterRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  CooksQueuedCookIdRoute: CooksQueuedCookIdRoute,
   IngredientsNewRoute: IngredientsNewRoute,
   RecipesRecipeIdRoute: RecipesRecipeIdRouteWithChildren,
   RecipesNewRoute: RecipesNewRoute,
   SettingsHouseholdRoute: SettingsHouseholdRoute,
+  CooksIndexRoute: CooksIndexRoute,
   IngredientsIndexRoute: IngredientsIndexRoute,
   RecipesIndexRoute: RecipesIndexRoute,
   ShoppingIndexRoute: ShoppingIndexRoute,

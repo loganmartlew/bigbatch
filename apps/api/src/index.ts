@@ -6,6 +6,7 @@ import rateLimit from '@fastify/rate-limit';
 import { env } from './lib/env.js';
 import { corePlugin } from './modules/core/index.js';
 import { authPlugin } from './modules/auth/index.js';
+import { cookEventsPlugin } from './modules/cook-events/index.js';
 import { ingredientsPlugin } from './modules/ingredients/index.js';
 import { recipesPlugin } from './modules/recipes/index.js';
 import { shoppingPlugin } from './modules/shopping/index.js';
@@ -33,6 +34,7 @@ await server.register(authPlugin);
 await server.register(ingredientsPlugin);
 await server.register(recipesPlugin);
 await server.register(shoppingPlugin);
+await server.register(cookEventsPlugin);
 
 server.get('/health', async () => ({ status: 'ok' }));
 

@@ -11,9 +11,15 @@ Missing Features
 - Dark mode
 - Settings
 - Account management
+- Mark all ingredients done for queued cook
 
 Security Considerations
 - Header for householdID seems fragile, get from body / query params etc
 
 Code Cleanup
 - shared/types is all in one file. Should be broken up a lot more
+
+Enhancements
+- Delay optimistic update of shopping list tick offs etc, to show checked before moving
+- Animations on shopping list
+- Optimistic updates on all API calls, with reversions for failed HTTP requests, and error toasts

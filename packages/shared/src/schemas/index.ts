@@ -4,3 +4,4 @@ export * from './ingredient.js';
 export * from './shopping-category.js';
 export * from './shopping-list.js';
 export * from './recipe.js';
+export * from './cook-event.js';

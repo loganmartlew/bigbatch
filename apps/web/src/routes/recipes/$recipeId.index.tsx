@@ -31,8 +31,13 @@ import {
   useDuplicateRecipe,
   useDeleteRecipe,
 } from '../../features/recipes/api';
+import {
+  useQueueRecipeCook,
+  useRecipeCookHistory,
+} from '../../features/cook-events/api';
 import { scaleQuantity, computePerServing } from '@bigbatch/shared';
-import type { NutritionInfo } from '@bigbatch/shared';
+import type { CookEventDetail, NutritionInfo } from '@bigbatch/shared';
+import { CookEventEditorModal } from '../../features/cook-events/components/cook-event-editor-modal';
 import { ConfirmDeleteRecipeModal } from '../../features/recipes/components/confirm-delete-recipe-modal';
 
 export const Route = createFileRoute('/recipes/$recipeId/')({
@@ -44,10 +49,14 @@ function RecipeDetailPage() {
   const navigate = useNavigate();
   const id = Number(recipeId);
   const { data: recipe, isLoading } = useRecipe(id);
+  const { data: cookHistory } = useRecipeCookHistory(id);
   const duplicateMutation = useDuplicateRecipe();
   const deleteMutation = useDeleteRecipe();
+  const queueCookMutation = useQueueRecipeCook();
   const [servings, setServings] = useState<number | null>(null);
   const [deleteOpened, setDeleteOpened] = useState(false);
+  const [editingCookEvent, setEditingCookEvent] =
+    useState<CookEventDetail | null>(null);
 
   if (isLoading) {
     return (
@@ -102,6 +111,12 @@ function RecipeDetailPage() {
         </Alert>
       ) : null}
 
+      {queueCookMutation.error instanceof Error ? (
+        <Alert color='red' title='Could not queue cook'>
+          {queueCookMutation.error.message}
+        </Alert>
+      ) : null}
+
       <Group justify='space-between' align='flex-start'>
         <div>
           <Title order={2}>{recipe.name}</Title>
@@ -117,11 +132,34 @@ function RecipeDetailPage() {
           )}
         </div>
         <Group>
-          <Link to='/recipes/$recipeId/cook' params={{ recipeId }}>
-            <Button leftSection={<IconChefHat size={16} />} variant='filled'>
-              Cook
-            </Button>
-          </Link>
+          <Button
+            leftSection={<IconChefHat size={16} />}
+            variant='filled'
+            loading={queueCookMutation.isPending}
+            onClick={() => {
+              queueCookMutation.mutate(
+                {
+                  recipeId: id,
+                  targetBatchSize: targetServings,
+                },
+                {
+                  onSuccess: queuedCook => {
+                    if (queuedCook.state === 'readyToCook') {
+                      navigate({
+                        to: '/cooks/$queuedCookId',
+                        params: { queuedCookId: String(queuedCook.id) },
+                      });
+                      return;
+                    }
+
+                    navigate({ to: '/cooks' });
+                  },
+                },
+              );
+            }}
+          >
+            Queue cook
+          </Button>
           <Link to='/recipes/$recipeId/edit' params={{ recipeId }}>
             <Button leftSection={<IconEdit size={16} />} variant='light'>
               Edit
@@ -243,6 +281,46 @@ function RecipeDetailPage() {
         </Card>
       )}
 
+      <Card withBorder padding='md'>
+        <Title order={4} mb='sm'>
+          Cook history
+        </Title>
+        {cookHistory && cookHistory.length > 0 ? (
+          <Stack gap='sm'>
+            {cookHistory.map(event => (
+              <Group key={event.id} justify='space-between' align='flex-start'>
+                <div>
+                  <Text fw={500}>
+                    {event.userDisplayName} cooked batch size {event.batchSize}
+                  </Text>
+                  <Text c='dimmed' size='sm'>
+                    {event.date}
+                  </Text>
+                  {event.notes ? (
+                    <Text size='sm' mt={4}>
+                      {event.notes}
+                    </Text>
+                  ) : null}
+                </div>
+                <Group>
+                  <Button
+                    variant='subtle'
+                    size='compact-sm'
+                    leftSection={<IconEdit size={14} />}
+                    onClick={() => setEditingCookEvent(event)}
+                  >
+                    Edit details
+                  </Button>
+                  <Badge variant='light'>Cook event</Badge>
+                </Group>
+              </Group>
+            ))}
+          </Stack>
+        ) : (
+          <Text c='dimmed'>No recorded cooks for this recipe yet.</Text>
+        )}
+      </Card>
+
       {recipe.nutrition && perServing && (
         <Card withBorder padding='md'>
           <Title order={4} mb='sm'>
@@ -269,6 +347,13 @@ function RecipeDetailPage() {
         loading={deleteMutation.isPending}
         onClose={() => setDeleteOpened(false)}
         onConfirm={handleDelete}
+      />
+
+      <CookEventEditorModal
+        opened={editingCookEvent != null}
+        cookEvent={editingCookEvent}
+        onClose={() => setEditingCookEvent(null)}
+        onSaved={() => setEditingCookEvent(null)}
       />
     </Stack>
   );
