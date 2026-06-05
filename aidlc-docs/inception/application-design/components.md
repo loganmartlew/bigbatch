@@ -56,10 +56,13 @@ BigBatch is structured as a **monorepo** (pnpm workspaces + Turborepo) with 3 ac
 
 ### Module: `cook-events`
 
-- **Purpose**: Cooking history logging and retrieval
+- **Purpose**: Queued-cook orchestration, cook-mode completion, and cooking history
 - **Responsibilities**:
-  - Log cook event (date, batch size, notes, user)
-  - Retrieve cook history for a recipe (chronological)
+  - Create and manage active queued cooks
+  - Derive `gathering ingredients` vs `ready to cook` from shopping-list state
+  - Complete a queued cook into a cook event
+  - Retrieve household dashboard history and recipe-specific history
+  - Edit cook-event date and notes
 - **Key Dependencies**: Drizzle ORM, `shared/types`
 
 ### Module: `core` (cross-cutting)
@@ -92,7 +95,8 @@ src/
     recipes/       — recipe UI, hooks, queries, form components
     ingredients/   — ingredient UI, hooks, queries
     shopping-list/ — shopping list UI, hooks, queries
-    cook-mode/     — cook mode UI, hooks
+    cooks/         — cooks dashboard, queued-cook UI, history editing
+    cook-mode/     — queue-backed cook mode UI, hooks
   routes/          — thin route shells composing feature components
   lib/             — API client, utilities
   providers/       — AuthProvider, HouseholdProvider (separate concerns)
@@ -108,14 +112,14 @@ src/
 ### Component Group: `routes`
 
 - **Purpose**: Thin route-level shells that compose feature components
-- **Key Pages**: Login, Register, Onboarding (create/join household), Recipes List, Recipe Detail, Recipe Editor, Ingredient Library, Shopping List, Cook Mode, Household Settings, Household Switcher
+- **Key Pages**: Login, Register, Onboarding (create/join household), Recipes List, Recipe Detail, Recipe Editor, Ingredient Library, Shopping List, Cooks Dashboard, Queue-Backed Cook Mode, Household Settings, Household Switcher
 - **Route protection**: TanStack Router `beforeLoad` guards ensure best-feeling UX — no flash of protected content, smooth transitions, skeleton states while auth bootstraps
 - **Notes**: Page shells should use Mantine layout primitives and shared section patterns for a consistent, polished UI
 
 ### Component Group: `features`
 
 - **Purpose**: Feature-specific UI components, hooks, queries, and form logic
-- **Subgroups**: `auth`, `household`, `recipes`, `ingredients`, `shopping-list`, `cook-mode`
+- **Subgroups**: `auth`, `household`, `recipes`, `ingredients`, `shopping-list`, `cooks`, `cook-mode`
 - **Responsibilities**: Feature-specific forms, lists, cards, drawers/modals, and TanStack Query hooks for API calls
 - **Validation**: Uses shared TypeBox schemas from `packages/shared` — no separate Zod schemas
 

@@ -26,10 +26,10 @@
 | US-20 | Group Shopping List by Category      | P1       | Unit 4: Shopping         |
 | US-21 | Tick Off Shopping List Items         | P0       | Unit 4: Shopping         |
 | US-22 | Clear Shopping List                  | P0       | Unit 4: Shopping         |
-| US-23 | Enter Cook Mode                      | P0       | Unit 3: Recipes          |
-| US-24 | Follow Steps in Cook Mode            | P0       | Unit 3: Recipes          |
-| US-25 | Log a Cook Event                     | P1       | Unit 5: Cook Events      |
-| US-26 | View Cook History                    | P1       | Unit 5: Cook Events      |
+| US-23 | Queue a Recipe to Cook               | P0       | Unit 5: Cook Events      |
+| US-24 | Cook a Ready Queued Recipe           | P0       | Unit 5: Cook Events      |
+| US-25 | Finish a Queued Cook                 | P1       | Unit 5: Cook Events      |
+| US-26 | View and Manage the Cooks Dashboard  | P1       | Unit 5: Cook Events      |
 | US-27 | View Household Members               | P1       | Unit 1: Auth & Household |
 | US-28 | Remove a Household Member            | P2       | Unit 1: Auth & Household |
 
@@ -40,29 +40,32 @@
 | Unit 0: Foundation       | —                  | —      | —     | —     | 0      |
 | Unit 1: Auth & Household | US-01–06, US-27–28 | 6      | 1     | 1     | 8      |
 | Unit 2: Ingredients      | US-07–10           | 2      | 2     | 0     | 4      |
-| Unit 3: Recipes          | US-11–16, US-23–24 | 6      | 2     | 0     | 8      |
+| Unit 3: Recipes          | US-11–16           | 4      | 2     | 0     | 6      |
 | Unit 4: Shopping         | US-17–22           | 4      | 2     | 0     | 6      |
-| Unit 5: Cook Events      | US-25–26           | 0      | 2     | 0     | 2      |
+| Unit 5: Cook Events      | US-23–26           | 2      | 2     | 0     | 4      |
 | **Totals**               | **28**             | **18** | **9** | **1** | **28** |
 
 **All 28 stories are assigned. No stories are unassigned.**
 
 ## PBT Property Distribution
 
-| Unit   | PBT Properties                                             |
-| ------ | ---------------------------------------------------------- |
-| Unit 2 | Invariant: ingredient edit → recipe nutrition recalculated |
-| Unit 3 | Invariant: perPortion = total / batchSize                  |
-| Unit 3 | Round-trip: duplicate preserves ingredients/instructions   |
-| Unit 3 | Invariant: scaling preserves ingredient count              |
-| Unit 3 | Invariant: per-portion nutrition stable across scaling     |
-| Unit 3 | Idempotency: scale(scale(r,N),N) = scale(r,N)              |
-| Unit 4 | Idempotency: consolidate(consolidate(x)) = consolidate(x)  |
-| Unit 4 | Invariant: total quantity preserved after consolidation    |
+| Unit   | PBT Properties                                                                      |
+| ------ | ----------------------------------------------------------------------------------- |
+| Unit 2 | Invariant: ingredient edit → recipe nutrition recalculated                          |
+| Unit 3 | Invariant: perPortion = total / batchSize                                           |
+| Unit 3 | Round-trip: duplicate preserves ingredients/instructions                            |
+| Unit 3 | Invariant: scaling preserves ingredient count                                       |
+| Unit 3 | Invariant: per-portion nutrition stable across scaling                              |
+| Unit 3 | Idempotency: scale(scale(r,N),N) = scale(r,N)                                       |
+| Unit 4 | Idempotency: consolidate(consolidate(x)) = consolidate(x)                           |
+| Unit 4 | Invariant: total quantity preserved after consolidation                             |
+| Unit 5 | Invariant: readiness equals all linked shopping requirements satisfied              |
+| Unit 5 | Invariant: queued-cook resize preserves ingredient count and rescales from snapshot |
+| Unit 5 | Stateful: create / resize / cancel / finish never auto-remove shared shopping rows  |
 
 ## Requirement Coverage
 
-All functional requirements (FR-01 through FR-08) are covered:
+Functional product requirements FR-01 through FR-08 are covered by assigned stories. FR-09 remains a cross-cutting scope constraint rather than a story-backed feature requirement.
 
 | Requirement | Unit(s)        |
 | ----------- | -------------- |
@@ -70,7 +73,7 @@ All functional requirements (FR-01 through FR-08) are covered:
 | FR-02       | Unit 2         |
 | FR-03       | Unit 3         |
 | FR-04       | Unit 4         |
-| FR-05       | Unit 3         |
+| FR-05       | Unit 5         |
 | FR-06       | Unit 5         |
 | FR-07       | Unit 1         |
 | FR-08       | Unit 2, Unit 3 |

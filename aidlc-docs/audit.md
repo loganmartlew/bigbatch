@@ -323,3 +323,57 @@
 **Context**: Construction remediation implementation pass for Unit 4 Shopping. No backend contract changes were required.
 
 ---
+
+## Construction — Unit 4 Shopping Approval
+
+**Timestamp**: 2026-06-05T20:15:00Z
+**User Input**: "Unit 4 approved, move on to unit 5"
+**AI Response**: Recorded explicit approval for Unit 4 Shopping, updated `aidlc-docs/aidlc-state.md` to mark Shopping approved, and advanced the tracked workflow to Unit 5: Cook Events Functional Design.
+**Context**: Construction stage approval gate between Unit 4 Shopping and Unit 5 Cook Events.
+
+---
+
+## Construction — Unit 5 Cook Events Functional Design Plan
+
+**Timestamp**: 2026-06-05T20:20:00Z
+**User Input**: (continuation from Unit 4 approval)
+**AI Response**: Created `aidlc-docs/construction/plans/cook-events-functional-design-plan.md` with unchecked design steps and eight embedded questions covering logging entry points, date rules, batch-size defaults, event mutability, recipe-deletion retention, history surface, time granularity, and recipe-scoped versus household-wide history. Grounded the plan against the current source tree: `cook_events` table and shared `CookEvent` type already exist, recipe detail and cook-mode routes exist, and no cook-events API module or web history implementation exists yet.
+**Context**: Construction — Unit 5 Functional Design planning/questions issued.
+
+---
+
+## Construction — Unit 5 Scope Change Request
+
+**Timestamp**: 2026-06-05T20:35:00Z
+**User Input**: "I'm not happy with the existing design thoughts around cook events and the existing cook mode. Fundamentally the data we are storing is good and I like it, but the implementation is not ideal. User flow I'm after: - User picks a recipe to cook from the recipe detail page - They select the batch size etc - Recipe is added to a 'queue' (not an actual queue data structure), in a state 'gathering ingredients' - Ingredients are added to the shopping list - When all ingredients on the shopping list are either marked have it or done, the queued recipe is in state 'ready to cook' (queud recipe state can be stateless, derived from other data) - Once the recipe is 'ready to cok' the user can enter cook mode - In cook mode ingredients should be shown by default at the top - All steps should be shown with checkboxes in a list instead of a slideshow style UI - A finish button at the bottom completes the queued recipe, clears from the queue, logs a cook event etc. - Cook events are viewable from a 'Cooks' dashboard (includes the queue and history) - CCook event dates can be edited to any date. Perform any necessary requirements gathering. Unit 5 should be modified completely to fit these new requirements."
+**AI Response**: Re-scoped Unit 5 functional-design planning from "log cook event + recipe history" to a broader cook orchestration slice spanning queued cooks, shopping-backed readiness, revised cook mode completion, and a household cooks dashboard. Rewrote `aidlc-docs/construction/plans/cook-events-functional-design-plan.md` with updated design steps and new clarification questions for queue identity, queue-to-shopping linkage, recipe snapshot behavior, finish cleanup, dashboard scope, edit permissions, and finish interaction shape. Updated `aidlc-docs/aidlc-state.md` to reflect the revised Unit 5 scope.
+**Context**: Construction — Unit 5 functional-design change request before artifact generation. Existing FR-05/FR-06 and US-23 through US-26 will need follow-up reconciliation after clarification answers are collected.
+
+---
+
+## Construction — Unit 5 Clarification Questions Issued
+
+**Timestamp**: 2026-06-05T20:45:00Z
+**User Input**: "Done"
+**AI Response**: Reviewed the completed Unit 5 plan answers and found four remaining design gaps that materially affect the functional design: shared shopping-row attribution under consolidation, whether queued cooks can be canceled, whether queued batch size stays editable, and how recipe-detail history should be surfaced alongside the new dashboard-first model. Created `aidlc-docs/construction/plans/cook-events-functional-design-clarification-questions.md` to resolve those points before generating the revised functional-design artifacts.
+**Context**: Construction — Unit 5 follow-up requirements gathering. Functional-design artifact generation is paused until clarification answers are provided.
+
+---
+
+## Construction — Unit 5 Clarification Answers Parsed
+
+**Timestamp**: 2026-06-05T21:05:00Z
+**User Input**: "Done"
+**AI Response**: Parsed the clarification answers with no remaining blocking ambiguities. Confirmed: consolidated shopping rows remain visible; shared rows skip automatic cleanup; queue cancellation prompts for shopping cleanup; queued batch size remains editable while gathering ingredients; recipe-detail history is inline. Combined with the earlier answers, this fixed the revised Unit 5 shape around multiple active queued cooks, post-creation event editing, ingredient snapshots plus live instructions, dashboard-first history, and household-shared event editing.
+**Context**: Construction — Unit 5 clarification analysis complete.
+
+---
+
+## Construction — Unit 5 Functional Design Generated
+
+**Timestamp**: 2026-06-05T21:15:00Z
+**User Input**: (continuation from completed clarification answers)
+**AI Response**: Generated the revised Unit 5 functional-design artifacts under `aidlc-docs/construction/cook-events/functional-design/`: `business-logic-model.md`, `business-rules.md`, `domain-entities.md`, and `frontend-components.md`. The design centers Unit 5 on queued cooks, shopping-backed readiness, queue-backed cook mode, finish-driven event creation, a household Cooks dashboard, and inline recipe history. Functional Design is now complete and awaiting approval.
+**Context**: Construction — Unit 5 Functional Design complete and awaiting user approval.
+
+---

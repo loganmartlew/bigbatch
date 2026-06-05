@@ -92,16 +92,17 @@
 
 ## Unit 5: Cook Events
 
-**Scope**: Cook event logging and history
+**Scope**: queued-cook orchestration, shopping-backed readiness, revised cook mode completion, cooks dashboard, and cook-event history/editing
 
-**Packages touched**: `apps/api`, `apps/web`
+**Packages touched**: `packages/shared`, `apps/api`, `apps/web`
 
 **Responsibilities**:
 
-- `apps/api`: cook-events module — log event, get history
-- `apps/web`: Log Cook Event action (from recipe detail or post-cook-mode), Cook History view on recipe detail
+- `packages/shared`: queued-cook and cook-event request/response schemas, plus shared queue/history view-model types
+- `apps/api`: cook-events module — create queued cooks, update queued batch size, cancel queued cooks, derive readiness, return cook-mode payloads, finish queued cooks, list dashboard/history, edit cook events
+- `apps/web`: recipe-detail prepare-to-cook flow, cooks dashboard, queue-backed cook mode, inline recipe history
 
-**Why last**: Cook events are the simplest domain module with no dependencies on other features. Minimal shared package work (types already defined in Unit 0).
+**Why last**: The revised cooks flow depends on recipes plus the already-implemented shared shopping list, because queued-cook readiness and cleanup are derived from shopping-list state.
 
 ---
 

@@ -2,13 +2,13 @@
 
 ## Intent Analysis
 
-| Dimension              | Value                                                                                                                                                                                                                                   |
-| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Dimension              | Value                                                                                                                                                                                                                                                                            |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **User Request**       | Build a bulk-cooking companion app called BigBatch for planning, cooking, and tracking bulk meals with macro/calorie awareness and reusable recipes. Current update: pause active mobile delivery, move future mobile to fully native clients, and adopt Mantine for the web UI. |
-| **Request Type**       | New Project (greenfield) with scope refinement during foundation construction                                                                                                                                                           |
-| **Scope**              | Multiple components — recipes, ingredients/nutrition, shopping list, cook mode, cook history, multi-user households, web + API in the current phase; native mobile deferred                                                         |
-| **Complexity**         | Moderate — clear domain model, several integration points (OpenFoodFacts, auth), and a design-system migration while construction is already in progress                                                                              |
-| **Requirements Depth** | Standard                                                                                                                                                                                                                                |
+| **Request Type**       | New Project (greenfield) with scope refinement during foundation construction                                                                                                                                                                                                    |
+| **Scope**              | Multiple components — recipes, ingredients/nutrition, shopping list, cook mode, cook history, multi-user households, web + API in the current phase; native mobile deferred                                                                                                      |
+| **Complexity**         | Moderate — clear domain model, several integration points (OpenFoodFacts, auth), and a design-system migration while construction is already in progress                                                                                                                         |
+| **Requirements Depth** | Standard                                                                                                                                                                                                                                                                         |
 
 ---
 
@@ -47,17 +47,24 @@
 - **FR-04.5**: Users can tick items off as they shop.
 - **FR-04.6**: Shopping lists are shared across the household.
 
-### FR-05: Cook Mode
+### FR-05: Planned Cooking And Cook Mode
 
-- **FR-05.1**: Users can open a recipe in cook mode on the web app — a clean, large-text, distraction-free view of the recipe instructions.
-- **FR-05.2**: Cook mode displays a checkable step list so users can tick off steps as they cook.
-- **FR-05.3**: Cook mode activates a screen wake-lock where the platform supports it.
+- **FR-05.1**: From recipe detail, users can choose a batch size and add a recipe to a persistent cooks queue.
+- **FR-05.2**: Queueing a cook adds the required ingredients to the shared household shopping list.
+- **FR-05.3**: A queued cook has a derived readiness state based on shopping-list completion: it remains `gathering ingredients` until all required ingredients are marked `haveThis` or `tickedOff`, then becomes `ready to cook`.
+- **FR-05.4**: While a queued cook is still gathering ingredients, the selected batch size can be changed and the linked ingredient requirements plus shopping quantities update accordingly.
+- **FR-05.5**: Users can enter cook mode only for a queued cook that is ready to cook.
+- **FR-05.6**: Cook mode displays required ingredients at the top by default and all instructions as a checklist in a single scrollable view.
+- **FR-05.7**: A finish action at the bottom of cook mode completes the queued cook, removes it from the active queue, and creates a cook event.
+- **FR-05.8**: Cook mode activates a screen wake-lock where the platform supports it.
 
-### FR-06: Cooking History
+### FR-06: Cooks Dashboard And History
 
-- **FR-06.1**: Each time a user cooks a recipe, they can log a cook event recording the date, batch size used, and optional free-text notes.
-- **FR-06.2**: A recipe's cook history is viewable as a chronological list of cook events.
-- **FR-06.3**: Cook events are associated with the user who cooked.
+- **FR-06.1**: The app provides a household-facing Cooks dashboard that shows active queued cooks and historical cook events.
+- **FR-06.2**: Cook history is viewable as a chronological newest-first list of cook events showing recipe, user, batch size, date, and notes.
+- **FR-06.3**: Cook events are associated with the user who completed the cook.
+- **FR-06.4**: After creation, cook-event date and notes can be edited from history surfaces.
+- **FR-06.5**: Recipe detail pages also show an inline recipe-specific history section in addition to the dashboard.
 
 ### FR-07: User & Household Management
 
@@ -142,21 +149,21 @@
 
 ## 4. Tech Stack Decisions
 
-| Decision              | Choice                                   | Detail                                                                                 |
-| --------------------- | ---------------------------------------- | -------------------------------------------------------------------------------------- |
-| Current delivery      | Web-first                                | Active implementation is `apps/web`, `apps/api`, and `packages/shared`                |
-| Future mobile         | Fully native                             | iOS + Android planned later; not part of the current construction scope                |
-| Backend               | TypeScript + Fastify                     | Schema-first validation; `fast-check` PBT; same language as the active frontend        |
-| Database              | SQLite via Turso                         | Managed, replicated, edge-optimized; libSQL for household-scale HTTP access            |
-| Authentication        | Self-managed Lucia Auth                  | Full control; SECURITY-12 compliance owned by us                                       |
-| API style             | REST + OpenAPI                           | Typed contracts, client-agnostic, future-native-friendly                               |
-| Web frontend          | Vite + React (SPA)                       | Static SPA; deployed to CDN edge                                                       |
-| Web UI library        | Mantine                                  | Shared theme, polished component library, responsive layout primitives                 |
-| Repo structure        | Monorepo (pnpm workspaces)               | `apps/web`, `apps/api`, `packages/shared`                                              |
-| Hosting — Web         | Cloudflare Pages                         | Static SPA on CDN edge                                                                 |
-| Hosting — API         | PaaS (e.g., Fly.io or Railway)           | Managed TLS, secrets, logging                                                          |
-| Hosting — DB          | Turso (managed)                          | Embedded libSQL, replicated to cloud                                                   |
-| PBT framework         | fast-check                               | TypeScript; integrates with Vitest/Jest; shrinking + seed reproducibility              |
+| Decision         | Choice                         | Detail                                                                          |
+| ---------------- | ------------------------------ | ------------------------------------------------------------------------------- |
+| Current delivery | Web-first                      | Active implementation is `apps/web`, `apps/api`, and `packages/shared`          |
+| Future mobile    | Fully native                   | iOS + Android planned later; not part of the current construction scope         |
+| Backend          | TypeScript + Fastify           | Schema-first validation; `fast-check` PBT; same language as the active frontend |
+| Database         | SQLite via Turso               | Managed, replicated, edge-optimized; libSQL for household-scale HTTP access     |
+| Authentication   | Self-managed Lucia Auth        | Full control; SECURITY-12 compliance owned by us                                |
+| API style        | REST + OpenAPI                 | Typed contracts, client-agnostic, future-native-friendly                        |
+| Web frontend     | Vite + React (SPA)             | Static SPA; deployed to CDN edge                                                |
+| Web UI library   | Mantine                        | Shared theme, polished component library, responsive layout primitives          |
+| Repo structure   | Monorepo (pnpm workspaces)     | `apps/web`, `apps/api`, `packages/shared`                                       |
+| Hosting — Web    | Cloudflare Pages               | Static SPA on CDN edge                                                          |
+| Hosting — API    | PaaS (e.g., Fly.io or Railway) | Managed TLS, secrets, logging                                                   |
+| Hosting — DB     | Turso (managed)                | Embedded libSQL, replicated to cloud                                            |
+| PBT framework    | fast-check                     | TypeScript; integrates with Vitest/Jest; shrinking + seed reproducibility       |
 
 ---
 

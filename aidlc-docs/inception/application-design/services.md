@@ -16,17 +16,17 @@ This is not a formal layered architecture with DI — it's a pragmatic module-pe
 
 ### `auth` Service
 
-| Function                                             | Orchestration                                                                                                        | Notes                                                  |
-| ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
-| `registerUser(email, password, firstName, lastName)` | Validate password policy → check breached passwords → hash with argon2 → insert user → return user                   | SECURITY-12: adaptive hashing, breached-password check |
-| `loginUser(email, password)`                         | Find user → verify hash → create Lucia session → set cookie                                                          | SECURITY-12: brute-force check before verification     |
-| `logoutUser(sessionId)`                              | Invalidate Lucia session                                                                                             |                                                        |
-| `getCurrentUser(sessionId)`                          | Validate session → load user + all households (via user_households)                                                  |                                                        |
-| `listUserHouseholds(userId)`                         | Query user_households join → return all households with role                                                         |                                                        |
-| `createHousehold(userId, name)`                      | Insert household → insert user_households row (role=owner)                                                           |                                                        |
-| `joinHousehold(userId, tokenOrCode)`                 | Validate invite → check not expired → insert user_households row (role=member)                                       |                                                        |
-| `generateInvite(householdId, ownerId)`               | Verify owner → generate unique token + short code → insert with expiry                                               |                                                        |
-| `removeHouseholdMember(ownerId, targetUserId)`       | Verify owner → verify target != owner → delete user_households row                                                   |                                                        |
+| Function                                             | Orchestration                                                                                      | Notes                                                  |
+| ---------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| `registerUser(email, password, firstName, lastName)` | Validate password policy → check breached passwords → hash with argon2 → insert user → return user | SECURITY-12: adaptive hashing, breached-password check |
+| `loginUser(email, password)`                         | Find user → verify hash → create Lucia session → set cookie                                        | SECURITY-12: brute-force check before verification     |
+| `logoutUser(sessionId)`                              | Invalidate Lucia session                                                                           |                                                        |
+| `getCurrentUser(sessionId)`                          | Validate session → load user + all households (via user_households)                                |                                                        |
+| `listUserHouseholds(userId)`                         | Query user_households join → return all households with role                                       |                                                        |
+| `createHousehold(userId, name)`                      | Insert household → insert user_households row (role=owner)                                         |                                                        |
+| `joinHousehold(userId, tokenOrCode)`                 | Validate invite → check not expired → insert user_households row (role=member)                     |                                                        |
+| `generateInvite(householdId, ownerId)`               | Verify owner → generate unique token + short code → insert with expiry                             |                                                        |
+| `removeHouseholdMember(ownerId, targetUserId)`       | Verify owner → verify target != owner → delete user_households row                                 |                                                        |
 
 ### `recipes` Service
 
@@ -60,24 +60,30 @@ This is not a formal layered architecture with DI — it's a pragmatic module-pe
 
 ### `cook-events` Service
 
-| Function                                            | Orchestration                                                     | Notes |
-| --------------------------------------------------- | ----------------------------------------------------------------- | ----- |
-| `logCookEvent(householdId, recipeId, userId, data)` | Validate recipe belongs to household → insert cook event → return |       |
-| `getCookHistory(householdId, recipeId)`             | Fetch cook events ordered by date DESC → return                   |       |
+| Function                                                                | Orchestration                                                                                                                                  | Notes                                            |
+| ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| `createQueuedCook(householdId, recipeId, userId, targetBatchSize)`      | Validate recipe → snapshot ingredient requirements → insert queued cook → add linked quantities to shopping list → return derived queue detail | Depends on shopping-list state and scaling logic |
+| `listCooksDashboard(householdId)`                                       | Fetch active queued cooks + linked requirements + cook history → derive readiness → return dashboard payload                                   | Household-scoped queue + history surface         |
+| `updateQueuedCookBatchSize(householdId, queuedCookId, targetBatchSize)` | Validate queued cook still gathering ingredients → recalculate required quantities → update shopping list → return refreshed queue detail      | Batch size locks once ready                      |
+| `cancelQueuedCook(householdId, queuedCookId, removeShoppingItems)`      | Remove queued cook → optionally remove dedicated shopping rows → retain shared rows                                                            | UI chooses whether to attempt cleanup            |
+| `getQueuedCookForCookMode(householdId, queuedCookId)`                   | Validate queued cook is ready → load queued ingredient snapshot + live recipe instructions → return cook-mode payload                          | Queue-backed cook-mode entry                     |
+| `finishQueuedCook(householdId, queuedCookId, userId)`                   | Re-check readiness → create cook event with default metadata → remove queued cook → clean up dedicated shopping rows                           | Shared shopping rows are retained                |
+| `getCookHistory(householdId, recipeId)`                                 | Fetch recipe-scoped cook events ordered newest-first → return                                                                                  | Supports inline recipe history                   |
+| `updateCookEvent(householdId, cookEventId, data)`                       | Validate household ownership → update date/notes → return refreshed event                                                                      | Any household member may edit                    |
 
 ---
 
 ## Cross-Cutting Services (in `core` module)
 
-| Service           | Responsibility                                                                                                           | Implementation                                       |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------- |
+| Service           | Responsibility                                                                                                                                                            | Implementation                                       |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
 | Auth middleware   | Validate Lucia session on every request; attach `request.user`; resolve `request.householdId` from `X-Household-Id` request header (validated against user's memberships) | Fastify `onRequest` hook                             |
-| Schema validation | Validate request body/params/query against TypeBox schemas                                                               | Fastify's built-in schema validation (SECURITY-05)   |
-| Rate limiter      | Limit requests on auth endpoints and public endpoints                                                                    | `@fastify/rate-limit` plugin (SECURITY-11)           |
-| Error handler     | Catch all unhandled errors, log structured details, return generic 500 to client                                         | Fastify `setErrorHandler` (SECURITY-09, SECURITY-15) |
-| CORS              | Restrict origins to web app domain(s)                                                                                    | `@fastify/cors` (SECURITY-08)                        |
-| Security headers  | Set CSP, HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy                                                  | `@fastify/helmet` (SECURITY-04)                      |
-| Logger            | Structured JSON logging with timestamp, request ID, level                                                                | Fastify's built-in pino logger (SECURITY-03)         |
+| Schema validation | Validate request body/params/query against TypeBox schemas                                                                                                                | Fastify's built-in schema validation (SECURITY-05)   |
+| Rate limiter      | Limit requests on auth endpoints and public endpoints                                                                                                                     | `@fastify/rate-limit` plugin (SECURITY-11)           |
+| Error handler     | Catch all unhandled errors, log structured details, return generic 500 to client                                                                                          | Fastify `setErrorHandler` (SECURITY-09, SECURITY-15) |
+| CORS              | Restrict origins to web app domain(s)                                                                                                                                     | `@fastify/cors` (SECURITY-08)                        |
+| Security headers  | Set CSP, HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy                                                                                                   | `@fastify/helmet` (SECURITY-04)                      |
+| Logger            | Structured JSON logging with timestamp, request ID, level                                                                                                                 | Fastify's built-in pino logger (SECURITY-03)         |
 
 ---
 

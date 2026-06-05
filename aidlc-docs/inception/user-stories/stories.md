@@ -385,68 +385,76 @@ Stories are organised by **user journey** (Q1=A), at **medium granularity** (one
 
 ## Journey 5: Cooking
 
-### US-23: Enter Cook Mode
+### US-23: Queue a Recipe to Cook
 
-**As** a cook in the kitchen, **I want to** open a recipe in cook mode **so that** I can follow the instructions hands-free with large readable text.
+**As** a cook, **I want to** choose a batch size from recipe detail and add the recipe to a cooks queue **so that** I can gather ingredients and prepare to cook.
 
 **Priority**: P0  
-**Refs**: FR-05.1, FR-05.3  
+**Refs**: FR-05.1, FR-05.2, FR-05.3, FR-05.4  
 **Persona**: Sam, Alex
 
 **Acceptance Criteria**:
 
-- [ ] Given I view a recipe, when I tap "Cook", then the recipe opens in a full-screen, large-text, distraction-free view showing instructions.
-- [ ] Screen wake-lock is activated — the screen does not turn off while in cook mode (FR-05.3).
-- [ ] Wake-lock is released when exiting cook mode.
+- [ ] Given I view a recipe, when I choose a batch size and start cooking prep, then a queued cook is created for that recipe and the required ingredients are added to the household shopping list.
+- [ ] Multiple active queued cooks may exist for the same recipe.
+- [ ] Given the queued cook is still gathering ingredients, when I change its batch size, then linked ingredient requirements and shopping quantities update immediately.
+- [ ] The queued cook remains in `gathering ingredients` until all required linked shopping items are satisfied.
 
 ---
 
-### US-24: Follow Steps in Cook Mode
+### US-24: Cook a Ready Queued Recipe
 
-**As** a cook in the kitchen, **I want to** tick off instruction steps as I complete them **so that** I can track where I am in the recipe.
+**As** a cook in the kitchen, **I want to** open a ready queued cook in an ingredients-first checklist mode **so that** I can cook without losing my place.
 
 **Priority**: P0  
-**Refs**: FR-05.2  
+**Refs**: FR-05.5, FR-05.6, FR-05.8  
 **Persona**: Sam, Alex
 
 **Acceptance Criteria**:
 
-- [ ] Each instruction step has a checkbox.
-- [ ] Tapping a step marks it as done (visual change — e.g., struck through or dimmed).
-- [ ] Progress is not persisted after exiting cook mode (cook mode is ephemeral per session).
+- [ ] Only queued cooks in a derived `ready to cook` state can enter cook mode.
+- [ ] Ingredients are shown at the top of cook mode by default.
+- [ ] All instruction steps are shown in a single checklist list; there is no slideshow-style step navigation.
+- [ ] Each instruction step has a checkbox and visually updates when marked done.
+- [ ] Screen wake-lock is activated while in cook mode and released on exit.
+- [ ] If the user exits cook mode before finishing, step-check progress is not persisted.
 
 ---
 
 ## Journey 6: Logging and History
 
-### US-25: Log a Cook Event
+### US-25: Finish a Queued Cook
 
-**As** a cook, **I want to** log that I cooked a recipe, with the batch size and optional notes **so that** I can track what I've made and reflect on it later.
+**As** a cook, **I want to** finish a queued cook **so that** it leaves the active queue and becomes part of household cook history.
 
 **Priority**: P1  
-**Refs**: FR-06.1, FR-06.3  
+**Refs**: FR-05.7, FR-06.1, FR-06.3  
 **Persona**: Sam, Alex
 
 **Acceptance Criteria**:
 
-- [ ] Given I have just exited cook mode (or I'm viewing a recipe), when I choose "Log cook", then I can enter/confirm the date, batch size, and optional notes.
-- [ ] The cook event is associated with my user account.
-- [ ] Default date is today; default batch size is the recipe's current batch size.
+- [ ] Cook mode has a `Finish` button at the bottom of the flow.
+- [ ] Given I press `Finish`, then the queued cook completes immediately with today's date, the queued batch size, and empty notes as defaults.
+- [ ] The resulting cook event is associated with my user account.
+- [ ] The queued cook is removed from the active queue.
+- [ ] Shopping rows contributed only by that queued cook are removed automatically; shared shopping rows are retained.
 
 ---
 
-### US-26: View Cook History for a Recipe
+### US-26: View and Manage the Cooks Dashboard
 
-**As** a household member, **I want to** see when a recipe was cooked, by whom, at what batch size, and with what notes **so that** I can learn from past cooks.
+**As** a household member, **I want to** see queued cooks and cook history in one place **so that** I can track what is planned, what is ready, and what has already been cooked.
 
 **Priority**: P1  
-**Refs**: FR-06.2  
+**Refs**: FR-06.2, FR-06.4, FR-06.5  
 **Persona**: Sam, Alex
 
 **Acceptance Criteria**:
 
-- [ ] Given I view a recipe, when I navigate to its cook history, then I see a chronological list of cook events showing date, user, batch size, and notes.
-- [ ] Events are ordered newest-first.
+- [ ] The Cooks dashboard shows active queued cooks plus cook history ordered newest-first.
+- [ ] Recipe detail pages also show an inline history section for that recipe.
+- [ ] Any household member can edit a cook event's date and notes from dashboard/history surfaces.
+- [ ] A queued cook can be cancelled from the dashboard, and the user is asked whether to remove associated shopping items from the list.
 
 ---
 
