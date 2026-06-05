@@ -12,10 +12,12 @@ import {
   ScrollArea,
   Loader,
   Alert,
+  ActionIcon,
 } from '@mantine/core';
-import { IconPlus, IconSearch } from '@tabler/icons-react';
+import { IconPlus, IconSearch, IconShoppingCart } from '@tabler/icons-react';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useIngredients } from '../../features/ingredients/api';
+import { AddIngredientModal } from '../../features/shopping/components/add-ingredient-modal';
 
 export const Route = createFileRoute('/ingredients/')({
   component: IngredientsPage,
@@ -25,6 +27,9 @@ function IngredientsPage() {
   const navigate = useNavigate();
   const { data: ingredients, isLoading, error } = useIngredients();
   const [search, setSearch] = useState('');
+  const [addToListIngredientId, setAddToListIngredientId] = useState<
+    number | null
+  >(null);
 
   const filtered = useMemo(() => {
     if (!ingredients) return [];
@@ -121,12 +126,29 @@ function IngredientsPage() {
                       />
                     </Group>
                   </Stack>
+                  <ActionIcon
+                    variant='subtle'
+                    color='blue'
+                    aria-label={`Add ${ingredient.name} to shopping list`}
+                    onClick={e => {
+                      e.stopPropagation();
+                      setAddToListIngredientId(ingredient.id);
+                    }}
+                  >
+                    <IconShoppingCart size={16} />
+                  </ActionIcon>
                 </Group>
               </Paper>
             ))}
           </Stack>
         </ScrollArea>
       </Stack>
+
+      <AddIngredientModal
+        opened={addToListIngredientId != null}
+        onClose={() => setAddToListIngredientId(null)}
+        presetIngredientId={addToListIngredientId ?? undefined}
+      />
     </Container>
   );
 }

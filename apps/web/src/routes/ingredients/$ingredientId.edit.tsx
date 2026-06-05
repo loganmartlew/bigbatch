@@ -107,20 +107,22 @@ function EditIngredientPage() {
             </Button>
             <Title order={2}>Edit Ingredient</Title>
           </Group>
-          <Tooltip
-            label='Ingredient is used by recipes and cannot be deleted'
-            disabled={!deleteDisabled}
-          >
-            <Button
-              color='red'
-              variant='light'
-              leftSection={<IconTrash size={16} />}
-              onClick={handleDelete}
-              loading={deleteMutation.isPending}
+          <Group>
+            <Tooltip
+              label='Ingredient is used by recipes and cannot be deleted'
+              disabled={!deleteDisabled}
             >
-              Delete
-            </Button>
-          </Tooltip>
+              <Button
+                color='red'
+                variant='light'
+                leftSection={<IconTrash size={16} />}
+                onClick={handleDelete}
+                loading={deleteMutation.isPending}
+              >
+                Delete
+              </Button>
+            </Tooltip>
+          </Group>
         </Group>
 
         {deleteMutation.error && (

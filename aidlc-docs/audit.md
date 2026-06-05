@@ -305,3 +305,21 @@
 **Context**: Sync-state reconciliation. Security Baseline and Property-Based Testing remain enabled. No approval-gated stage was advanced beyond the now-implemented-and-session-approved Unit 3 snapshot.
 
 ---
+
+## Construction — Unit 4 Shopping Follow-up Remediation Plan
+
+**Timestamp**: 2026-06-04T00:00:00Z
+**User Input**: "I have some issues with the changes that were just implemented. Come up with a plan to resolve these issues."
+**AI Response**: Reviewed the implemented Shopping web slice against current source reality and existing feature-folder conventions. Created `aidlc-docs/construction/plans/shopping-web-remediation-plan.md` covering structural refactor, feature-folder alignment, optimistic updates, action-menu redesign, done-area + restore flow, mobile swipe interactions, and the missing Ingredient Detail Add-to-List wiring.
+**Context**: Construction follow-up planning for Unit 4 Shopping. No application code changed in this pass.
+
+---
+
+## Construction — Unit 4 Shopping Follow-up Remediation Implementation
+
+**Timestamp**: 2026-06-04T00:20:00Z
+**User Input**: "Plan approved. Implement the changes"
+**AI Response**: Refactored the Shopping web slice to align with `apps/web` feature conventions: moved reusable Shopping UI into `apps/web/src/features/shopping/components/`, thinned `src/routes/shopping/index.tsx`, added a feature-local Shopping view model (`model.ts`) for active-vs-done derivation, implemented optimistic cache updates for tick-off/have-this/remove/restore mutations, replaced inline `Have it` and delete controls with a three-dot menu on active rows, added a dedicated Done section with Restore actions, added mobile swipe-to-reveal actions for active rows, and wired `Add to List` into the Ingredient Detail/Edit page in addition to the Ingredient Library. Validation passed with `pnpm --filter @bigbatch/web typecheck` and `pnpm --filter @bigbatch/web test`.
+**Context**: Construction remediation implementation pass for Unit 4 Shopping. No backend contract changes were required.
+
+---

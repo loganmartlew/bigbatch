@@ -98,6 +98,14 @@ function RootLayout() {
                 ) : null}
                 {auth.households.length > 0 ? (
                   <Button
+                    onClick={() => navigate({ to: '/shopping' })}
+                    variant='default'
+                  >
+                    Shopping
+                  </Button>
+                ) : null}
+                {auth.households.length > 0 ? (
+                  <Button
                     onClick={() => navigate({ to: '/settings/household' })}
                     variant='default'
                   >

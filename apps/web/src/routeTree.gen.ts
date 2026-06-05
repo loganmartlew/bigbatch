@@ -16,6 +16,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ShoppingIndexRouteImport } from './routes/shopping/index'
 import { Route as RecipesIndexRouteImport } from './routes/recipes/index'
 import { Route as IngredientsIndexRouteImport } from './routes/ingredients/index'
 import { Route as SettingsHouseholdRouteImport } from './routes/settings/household'
@@ -60,6 +61,11 @@ const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShoppingIndexRoute = ShoppingIndexRouteImport.update({
+  id: '/shopping/',
+  path: '/shopping/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RecipesIndexRoute = RecipesIndexRouteImport.update({
@@ -128,6 +134,7 @@ export interface FileRoutesByFullPath {
   '/settings/household': typeof SettingsHouseholdRoute
   '/ingredients/': typeof IngredientsIndexRoute
   '/recipes/': typeof RecipesIndexRoute
+  '/shopping/': typeof ShoppingIndexRoute
   '/ingredients/$ingredientId/edit': typeof IngredientsIngredientIdEditRoute
   '/recipes/$recipeId/cook': typeof RecipesRecipeIdCookRoute
   '/recipes/$recipeId/edit': typeof RecipesRecipeIdEditRoute
@@ -146,6 +153,7 @@ export interface FileRoutesByTo {
   '/settings/household': typeof SettingsHouseholdRoute
   '/ingredients': typeof IngredientsIndexRoute
   '/recipes': typeof RecipesIndexRoute
+  '/shopping': typeof ShoppingIndexRoute
   '/ingredients/$ingredientId/edit': typeof IngredientsIngredientIdEditRoute
   '/recipes/$recipeId/cook': typeof RecipesRecipeIdCookRoute
   '/recipes/$recipeId/edit': typeof RecipesRecipeIdEditRoute
@@ -166,6 +174,7 @@ export interface FileRoutesById {
   '/settings/household': typeof SettingsHouseholdRoute
   '/ingredients/': typeof IngredientsIndexRoute
   '/recipes/': typeof RecipesIndexRoute
+  '/shopping/': typeof ShoppingIndexRoute
   '/ingredients/$ingredientId/edit': typeof IngredientsIngredientIdEditRoute
   '/recipes/$recipeId/cook': typeof RecipesRecipeIdCookRoute
   '/recipes/$recipeId/edit': typeof RecipesRecipeIdEditRoute
@@ -187,6 +196,7 @@ export interface FileRouteTypes {
     | '/settings/household'
     | '/ingredients/'
     | '/recipes/'
+    | '/shopping/'
     | '/ingredients/$ingredientId/edit'
     | '/recipes/$recipeId/cook'
     | '/recipes/$recipeId/edit'
@@ -205,6 +215,7 @@ export interface FileRouteTypes {
     | '/settings/household'
     | '/ingredients'
     | '/recipes'
+    | '/shopping'
     | '/ingredients/$ingredientId/edit'
     | '/recipes/$recipeId/cook'
     | '/recipes/$recipeId/edit'
@@ -224,6 +235,7 @@ export interface FileRouteTypes {
     | '/settings/household'
     | '/ingredients/'
     | '/recipes/'
+    | '/shopping/'
     | '/ingredients/$ingredientId/edit'
     | '/recipes/$recipeId/cook'
     | '/recipes/$recipeId/edit'
@@ -244,6 +256,7 @@ export interface RootRouteChildren {
   SettingsHouseholdRoute: typeof SettingsHouseholdRoute
   IngredientsIndexRoute: typeof IngredientsIndexRoute
   RecipesIndexRoute: typeof RecipesIndexRoute
+  ShoppingIndexRoute: typeof ShoppingIndexRoute
   IngredientsIngredientIdEditRoute: typeof IngredientsIngredientIdEditRoute
 }
 
@@ -296,6 +309,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shopping/': {
+      id: '/shopping/'
+      path: '/shopping'
+      fullPath: '/shopping/'
+      preLoaderRoute: typeof ShoppingIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/recipes/': {
@@ -401,6 +421,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsHouseholdRoute: SettingsHouseholdRoute,
   IngredientsIndexRoute: IngredientsIndexRoute,
   RecipesIndexRoute: RecipesIndexRoute,
+  ShoppingIndexRoute: ShoppingIndexRoute,
   IngredientsIngredientIdEditRoute: IngredientsIngredientIdEditRoute,
 }
 export const routeTree = rootRouteImport

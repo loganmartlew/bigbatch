@@ -184,6 +184,46 @@ export interface ShoppingListItem {
   createdAt: string;
 }
 
+export interface ShoppingListItemEnriched {
+  id: number;
+  householdId: number;
+  ingredientId: number;
+  ingredientName: string;
+  ingredientDefaultUnit: string;
+  categoryId: number | null;
+  categoryName: string | null;
+  categorySortOrder: number | null;
+  quantity: number;
+  unit: string;
+  tickedOff: boolean;
+  haveThis: boolean;
+  createdAt: string;
+}
+
+export interface ShoppingListGroup {
+  categoryId: number | null;
+  categoryName: string | null;
+  sortOrder: number;
+  items: ShoppingListItemEnriched[];
+}
+
+export interface ShoppingListResponse {
+  groups: ShoppingListGroup[];
+  totalItems: number;
+}
+
+export interface ItemCandidate {
+  ingredientId: number;
+  quantity: number;
+  unit: string;
+}
+
+export interface AddIngredientToListInput {
+  ingredientId: number;
+  quantity: number;
+  unit: string;
+}
+
 // ─── Cook Events ─────────────────────────────────────────────
 
 export interface CookEvent {

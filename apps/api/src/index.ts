@@ -8,6 +8,7 @@ import { corePlugin } from './modules/core/index.js';
 import { authPlugin } from './modules/auth/index.js';
 import { ingredientsPlugin } from './modules/ingredients/index.js';
 import { recipesPlugin } from './modules/recipes/index.js';
+import { shoppingPlugin } from './modules/shopping/index.js';
 
 const server = Fastify({
   logger: {
@@ -31,9 +32,7 @@ await server.register(corePlugin);
 await server.register(authPlugin);
 await server.register(ingredientsPlugin);
 await server.register(recipesPlugin);
-
-// Domain module plugins registered here in later units:
-// await server.register(shoppingListPlugin, { prefix: "/shopping-list" });
+await server.register(shoppingPlugin);
 
 server.get('/health', async () => ({ status: 'ok' }));
 

@@ -4,3 +4,4 @@ export * from './schemas/index.js';
 export * from './password.js';
 export * from './nutrition.js';
 export * from './scaling.js';
+export * from './shopping.js';

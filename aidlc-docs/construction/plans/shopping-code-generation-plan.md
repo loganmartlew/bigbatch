@@ -24,19 +24,19 @@
 
 ## Steps
 
-- [ ] **Step 1**: Shared types — add `ShoppingListItemEnriched`, `ShoppingListGroup`, `ShoppingListResponse`, `ItemCandidate`, `AddIngredientToListInput` to `packages/shared/src/types/index.ts`
-- [ ] **Step 2**: Shared schemas — create `packages/shared/src/schemas/shopping-list.ts` with `AddRecipeToListSchema`, `AddIngredientToListSchema`, `UpdateItemQuantitySchema`, `ShoppingListItemEnrichedSchema`, `ShoppingListResponseSchema`; re-export from `packages/shared/src/schemas/index.ts`
-- [ ] **Step 3**: Shared utilities — create `packages/shared/src/shopping.ts` with `consolidateItems`, `addRecipeToList`, `groupByCategory`; export from `packages/shared/src/index.ts`
-- [ ] **Step 4**: PBT tests for shared utilities — create `packages/shared/src/shopping.test.ts` with fast-check invariants
-- [ ] **Step 5**: Shopping list service — create `apps/api/src/modules/shopping/shopping-list.service.ts` with all 7 service operations
-- [ ] **Step 6**: Shopping list routes — create `apps/api/src/modules/shopping/shopping-list.routes.ts` with all 8 endpoints
-- [ ] **Step 7**: Plugin registration — create `apps/api/src/modules/shopping/index.ts`; register in `apps/api/src/index.ts`
-- [ ] **Step 8**: API route tests — create `apps/api/src/modules/shopping/__tests__/shopping-list.routes.test.ts`
-- [ ] **Step 9**: Web TanStack Query hooks — create `apps/web/src/features/shopping/api.ts`
-- [ ] **Step 10**: Shopping List page — create `apps/web/src/routes/shopping/index.tsx` with full grouped UI
-- [ ] **Step 11**: Add Ingredient Modal component — create `apps/web/src/features/shopping/AddIngredientModal.tsx`
-- [ ] **Step 12**: Wire "Add to List" into existing Ingredient pages (Unit 2 touch)
-- [ ] **Step 13**: Route registration, nav link, typecheck, and code generation summary
+- [x] **Step 1**: Shared types — add `ShoppingListItemEnriched`, `ShoppingListGroup`, `ShoppingListResponse`, `ItemCandidate`, `AddIngredientToListInput` to `packages/shared/src/types/index.ts`
+- [x] **Step 2**: Shared schemas — create `packages/shared/src/schemas/shopping-list.ts` with `AddRecipeToListSchema`, `AddIngredientToListSchema`, `UpdateItemQuantitySchema`, `ShoppingListItemEnrichedSchema`, `ShoppingListResponseSchema`; re-export from `packages/shared/src/schemas/index.ts`
+- [x] **Step 3**: Shared utilities — create `packages/shared/src/shopping.ts` with `consolidateItems`, `addRecipeToList`, `groupByCategory`; export from `packages/shared/src/index.ts`
+- [x] **Step 4**: PBT tests for shared utilities — create `packages/shared/src/shopping.test.ts` with fast-check invariants
+- [x] **Step 5**: Shopping list service — create `apps/api/src/modules/shopping/shopping-list.service.ts` with all 7 service operations
+- [x] **Step 6**: Shopping list routes — create `apps/api/src/modules/shopping/shopping-list.routes.ts` with all 8 endpoints
+- [x] **Step 7**: Plugin registration — create `apps/api/src/modules/shopping/index.ts`; register in `apps/api/src/index.ts`
+- [x] **Step 8**: API route tests — create `apps/api/src/modules/shopping/__tests__/shopping-list.routes.test.ts`
+- [x] **Step 9**: Web TanStack Query hooks — create `apps/web/src/features/shopping/api.ts`
+- [x] **Step 10**: Shopping List page — create `apps/web/src/routes/shopping/index.tsx` with full grouped UI
+- [x] **Step 11**: Add Ingredient Modal component — create `apps/web/src/features/shopping/AddIngredientModal.tsx`
+- [x] **Step 12**: Wire "Add to List" into existing Ingredient pages (Unit 2 touch)
+- [x] **Step 13**: Route registration, nav link, typecheck, and code generation summary
 
 ---
 

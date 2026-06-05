@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@types/zxcvbn": "^4.4.4",
+    "fast-check": "^3.23.0",
     "typescript": "^5.8.0",
     "vitest": "^3.2.0"
   }

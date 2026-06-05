@@ -5,7 +5,7 @@
 - **Project Name**: BigBatch
 - **Project Type**: Greenfield origin
 - **Start Date**: 2026-05-13T00:00:00Z
-- **Current Stage**: CONSTRUCTION - Unit 4: Shopping (Code Generation Planning)
+- **Current Stage**: CONSTRUCTION - Unit 5: Cook Events (Not Started)
 
 ## Workspace State
 
@@ -26,7 +26,7 @@
 - **Unit 0: Foundation**: Implemented across the active monorepo root, `apps/api`, `apps/web`, and `packages/shared`
 - **Unit 1: Auth & Household**: Code is present in API routes/services/tests, shared auth and household schemas, and web auth/onboarding/settings flows
 - **Mobile**: No active `apps/mobile` package exists in the workspace; future native mobile remains deferred
-- **Units 2–5**: Ingredients and Recipes modules are implemented in API, shared contracts, and web flows. Recipe web UX now includes layout-based detail/edit/cook routes, inline ingredient creation from recipe forms, drag-and-drop step ordering, Mantine delete confirmation, visible duplicate/delete error states, and a fixed no-body duplicate request. Shopping and cook-event modules are not implemented yet.
+- **Units 2–5**: Ingredients, Recipes, and Shopping modules are fully implemented in API, shared contracts, and web flows. The Shopping module includes: grouped shopping list page, add-recipe (with scaling) and add-ingredient (manual, from list or ingredient pages), inline quantity edit, ticked-off and have-this toggles, individual item remove, clear-list with confirmation, and "Add to List" buttons on the Ingredient Library page. Cook Events module is not implemented yet.
 
 ## Stage Progress
 
@@ -46,7 +46,7 @@
 - [x] Unit 1: Auth & Household (APPROVED)
 - [x] Unit 2: Ingredients (APPROVED)
 - [x] Unit 3: Recipes (APPROVED)
-- [ ] Unit 4: Shopping (Functional Design APPROVED; Code Generation in progress)
+- [x] Unit 4: Shopping (COMPLETE)
 - [ ] Unit 5: Cook Events
 - [ ] Build and Test
 
